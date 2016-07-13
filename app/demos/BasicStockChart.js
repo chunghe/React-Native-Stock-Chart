@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 
-class Demos extends Component {
+class BasicStockChart extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
         <View>
-          <Text>Hello World</Text>
+          <Text>Basic Stock chart</Text>
         </View>
       </ScrollView>
     );
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Demos;
+export default BasicStockChart;

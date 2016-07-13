@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 
 import { navigatePush, navigatePop } from '../redux/modules/routing';
 
-import Demos from '../components/Demos';
+import Demos from '../demos';
+import BasicStockChart from '../demos/BasicStockChart';
 
 const {
   CardStack: NavigationCardStack,
@@ -18,6 +19,7 @@ class AppContainer extends React.Component {
     const { route } = scene;
     const componentsMapping = {
       Demos,
+      BasicStockChart
     };
 
     const toRender = componentsMapping[route.key] || null;
