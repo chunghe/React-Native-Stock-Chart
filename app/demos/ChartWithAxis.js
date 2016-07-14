@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, Text, StyleSheet } from 'react-native';
 import {
   VictoryAxis,
-	VictoryBar,
   VictoryLine,
   VictoryChart
 } from 'victory-chart-native';
@@ -14,7 +13,7 @@ class ChartWithAxis extends Component {
     const { ticks, tradingHours, highestPrice, lowestPrice, previousClose } = data;
     return (
       <ScrollView style={styles.container}>
-        <Text style={{fontSize: 24}}>With Axis</Text>
+        <Text style={{ fontSize: 24 }}>With Axis</Text>
         <Text>VictoryChart will calcualte proper scale with axis for you</Text>
         <VictoryChart>
           <VictoryLine
@@ -23,6 +22,7 @@ class ChartWithAxis extends Component {
             y={'price'}
           />
         </VictoryChart>
+
         <Text>add scale: "time" to x-axis, Victory chart will display proper time format</Text>
         <VictoryChart
           scale={{
@@ -51,6 +51,7 @@ class ChartWithAxis extends Component {
             y={'price'}
           />
         </VictoryChart>
+
         <Text>add some room at the bottom</Text>
         <VictoryChart
           domainPadding={{
@@ -82,24 +83,23 @@ class ChartWithAxis extends Component {
             x: tradingHours.map(t => t * 1000)
           }}
         >
-					<VictoryAxis />
+          <VictoryAxis />
           <VictoryAxis
             dependentAxis
-						style={{
-							grid: {
-								stroke: '#ddd',
-								strokeWidth: 1
-							},
-							axis: {stroke: 'transparent'},
-							ticks: {stroke: 'transparent'}
-						}}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
-
-            <VictoryLine
-              data={ticks}
-							x={(d) => d.time * 1000}
-              y={'price'}
-            />
+          <VictoryLine
+            data={ticks}
+            x={(d) => d.time * 1000}
+            y={'price'}
+          />
         </VictoryChart>
 
         <Text>add previous close</Text>
@@ -114,33 +114,33 @@ class ChartWithAxis extends Component {
             x: tradingHours.map(t => t * 1000)
           }}
         >
-					<VictoryAxis />
+          <VictoryAxis />
           <VictoryAxis
             dependentAxis
-						style={{
-							grid: {
-								stroke: '#ddd',
-								strokeWidth: 1
-							},
-							axis: {stroke: 'transparent'},
-							ticks: {stroke: 'transparent'}
-						}}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
 
-            <VictoryLine
-              data={ticks}
-              x={(d) => new Date(d.time * 1000)}
-              y={'price'}
-            />
-						<VictoryLine
-              data={[
-								{x: tradingHours[0] * 1000, y: previousClose},
-								{x: tradingHours[1] * 1000, y: previousClose}
-							]}
-						/>
+          <VictoryLine
+            data={ticks}
+            x={(d) => new Date(d.time * 1000)}
+            y={'price'}
+          />
+          <VictoryLine
+            data={[
+              { x: tradingHours[0] * 1000, y: previousClose },
+              { x: tradingHours[1] * 1000, y: previousClose }
+            ]}
+          />
         </VictoryChart>
 
-				<Text>But somehow the domain of Y-Axis is wrongly calculated, let's calculate it manually</Text>
+        <Text>But somehow the domain of Y-Axis is wrongly calculated, let's calculate it manually</Text>
         <VictoryChart
           domainPadding={{
             y: 20
@@ -150,35 +150,34 @@ class ChartWithAxis extends Component {
           }}
           domain={{
             x: tradingHours.map(t => t * 1000),
-						y: [lowestPrice, highestPrice]
+            y: [lowestPrice, highestPrice]
           }}
         >
-					<VictoryAxis />
+          <VictoryAxis />
           <VictoryAxis
             dependentAxis
-						style={{
-							grid: {
-								stroke: '#ddd',
-								strokeWidth: 1
-							},
-							axis: {stroke: 'transparent'},
-							ticks: {stroke: 'transparent'}
-						}}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
 
-            <VictoryLine
-              data={ticks}
-              x={(d) => new Date(d.time * 1000)}
-              y={'price'}
-            />
-						<VictoryLine
-              data={[
-								{x: tradingHours[0] * 1000, y: previousClose},
-								{x: tradingHours[1] * 1000, y: previousClose}
-							]}
-						/>
+          <VictoryLine
+            data={ticks}
+            x={(d) => new Date(d.time * 1000)}
+            y={'price'}
+          />
+          <VictoryLine
+            data={[
+              { x: tradingHours[0] * 1000, y: previousClose },
+              { x: tradingHours[1] * 1000, y: previousClose }
+            ]}
+          />
         </VictoryChart>
-
       </ScrollView>
     );
   }
