@@ -6,6 +6,9 @@ import { navigatePush, navigatePop } from '../redux/modules/routing';
 
 import Demos from '../demos';
 import BasicStockChart from '../demos/BasicStockChart';
+import ChartWithAxis from '../demos/ChartWithAxis';
+import MultipleAxes from '../demos/MultipleAxes';
+import VolumeChart from '../demos/VolumeChart';
 
 const {
   CardStack: NavigationCardStack,
@@ -19,7 +22,10 @@ class AppContainer extends React.Component {
     const { route } = scene;
     const componentsMapping = {
       Demos,
-      BasicStockChart
+      BasicStockChart,
+      ChartWithAxis,
+      MultipleAxes,
+      VolumeChart
     };
 
     const toRender = componentsMapping[route.key] || null;
