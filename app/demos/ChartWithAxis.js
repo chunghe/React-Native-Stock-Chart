@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import {
   VictoryAxis,
   VictoryLine,
   VictoryChart
 } from 'victory-chart-native';
 
+import Text from '../components/Text';
 import data from '../data';
 
 class ChartWithAxis extends Component {
@@ -13,7 +14,7 @@ class ChartWithAxis extends Component {
     const { ticks, tradingHours, highestPrice, lowestPrice, previousClose } = data;
     return (
       <ScrollView style={styles.container}>
-        <Text style={{ fontSize: 24 }}>With Axis</Text>
+        <Text heading>Line Chart with Axis</Text>
         <Text>VictoryChart will calcualte proper scale with axis for you</Text>
         <VictoryChart>
           <VictoryLine
@@ -23,7 +24,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>add scale: "time" to x-axis, Victory chart will display proper time format</Text>
+        <Text>add scale: "time" to x-axis, VictoryChart will display proper time format</Text>
         <VictoryChart
           scale={{
             x: 'time'
@@ -36,7 +37,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>it turns out this is only part of the daily data, add domain to the x-axis to make the chart only part of daily chart</Text>
+        <Text>it turns out this is only partial data, add domain to the x-axis to make the chart only occupy part of the chart</Text>
         <VictoryChart
           scale={{
             x: 'time'
@@ -52,7 +53,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>add some room at the bottom</Text>
+        <Text>add some padding at the bottom of the chart</Text>
         <VictoryChart
           domainPadding={{
             y: 20
@@ -71,7 +72,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>add some grid line</Text>
+        <Text>add grid lines</Text>
         <VictoryChart
           domainPadding={{
             y: 20
@@ -102,7 +103,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>add previous close</Text>
+        <Text>add grid line to show previous close price</Text>
         <VictoryChart
           domainPadding={{
             y: 20
@@ -140,7 +141,7 @@ class ChartWithAxis extends Component {
           />
         </VictoryChart>
 
-        <Text>But somehow the domain of Y-Axis is wrongly calculated, let's calculate it manually</Text>
+        <Text>somehow the domain of y-aix is wrongly calculated, let's calculate it manually</Text>
         <VictoryChart
           domainPadding={{
             y: 20

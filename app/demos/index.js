@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
+import Text from '../components/Text';
 import { navigatePush } from '../redux/modules/routing';
 
 class Demos extends Component {

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   VictoryAxis,
 	VictoryBar,
 } from 'victory-chart-native';
 import Svg from 'react-native-svg';
 
+import Text from '../components/Text';
 import data from '../data';
 
 const defaultHeight = 300;
@@ -19,7 +20,8 @@ class VolumeChart extends Component {
     const { ticks, tradingHours } = data;
     return (
       <ScrollView style={styles.container}>
-        <Text>Basic volume chart using VictoryBar</Text>
+        <Text header>Volume chart</Text>
+        <Text>basic volume chart using VictoryBar</Text>
         <VictoryBar
           height={200}
           data={ticks}
