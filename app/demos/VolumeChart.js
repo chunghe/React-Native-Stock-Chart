@@ -76,14 +76,14 @@ class VolumeChart extends Component {
           <Svg height={100} width={defaultWidth}>
             <VictoryAxis
               height={100}
-              padding={{ left: 50, top: 0, bottom: 0, right: 50 }}
+              padding={{ left: 50, top: 0, bottom: 20, right: 50 }}
               standalone={false}
               domain={tradingHours.map(t => t * 1000)}
               scale="time"
             />
             <VictoryAxis
               dependentAxis
-              padding={{ left: 50, top: 5, bottom: 0, right: 50 }}
+              padding={{ left: 50, top: 0, bottom: 20, right: 50 }}
               height={100}
               standalone={false}
               domain={[lowestVolume, highestVolume]}
@@ -91,7 +91,7 @@ class VolumeChart extends Component {
               tickCount={2}
             />
             <VictoryBar
-              padding={{ left: 50, top: 5, bottom: 0, right: 50 }}
+              padding={{ left: 50, top: 0, bottom: 20, right: 50 }}
               height={100}
               domain={{
                 x: tradingHours.map(t => t * 1000)
