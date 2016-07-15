@@ -4,6 +4,7 @@ Step-by-Step guide to build stock chart using [victory-chart-native](https://git
 
 ## getting started
 $ npm install
+
 $ react-native run-ios
 
 ## Screenshots
