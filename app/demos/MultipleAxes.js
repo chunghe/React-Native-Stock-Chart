@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
+  VictoryArea,
   VictoryAxis,
   VictoryLine,
 } from 'victory-chart-native';
@@ -117,7 +118,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>add previous close line back</Text>
+        <Text>add previous close line/grid line back</Text>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -128,6 +129,14 @@ class MultipleAxes extends Component {
             dependentAxis
             standalone={false}
             domain={[lowestPrice, highestPrice]}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
           <VictoryAxis
             dependentAxis
@@ -144,6 +153,67 @@ class MultipleAxes extends Component {
             }}
             x={(d) => new Date(d.time * 1000)}
             y={'price'}
+          />
+          <VictoryLine
+            standalone={false}
+            domain={{
+              y: [lowestPrice, highestPrice]
+            }}
+            data={[
+              { x: tradingHours[0] * 1000, y: previousClose },
+              { x: tradingHours[1] * 1000, y: previousClose }
+            ]}
+            style={{
+              data: {
+                stroke: 'blue',
+                strokeWidth: 0.5
+              }
+            }}
+          />
+        </Svg>
+
+        <Text>use AxisArea</Text>
+        <Svg height={defaultHeight} width={defaultWidth}>
+          <VictoryAxis
+            standalone={false}
+            scale="time"
+            domain={tradingHours.map(t => t * 1000)}
+          />
+          <VictoryAxis
+            dependentAxis
+            standalone={false}
+            domain={[lowestPrice, highestPrice]}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
+          />
+          <VictoryAxis
+            dependentAxis
+            orientation="right"
+            standalone={false}
+            domain={[lowestPrice, highestPrice]}
+            tickFormat={(t) => util.tickFormatPercent(t, previousClose)}
+          />
+          <VictoryArea
+            standalone={false}
+            data={ticks}
+            domain={{
+              x: tradingHours.map(t => t * 1000),
+              y: [lowestPrice, highestPrice]
+            }}
+            x={(d) => new Date(d.time * 1000)}
+            y={'price'}
+            style={{
+              data: {
+                stroke: 'rgba(0, 102, 221, 0.75)',
+                fill: 'rgba(237, 247, 255, 0.75)',
+              }
+            }}
           />
           <VictoryLine
             standalone={false}
