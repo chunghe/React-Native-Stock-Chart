@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   VictoryAxis,
 	VictoryBar,
@@ -20,48 +20,21 @@ class VolumeChart extends Component {
     const { ticks, tradingHours } = data;
     return (
       <ScrollView style={styles.container}>
-        <Text header>Volume chart</Text>
-        <Text>basic volume chart using VictoryBar</Text>
-        <VictoryBar
-          height={200}
-          data={ticks}
-          x={(d) => d.time}
-          y={'volume'}
-        />
-
-        <Text>add some color</Text>
-        <VictoryBar
-          height={200}
-          data={ticks}
-          x={(d) => d.time}
-          y={'volume'}
-          style={{
-            data: {
-              fill: (d) => { return d.mark ? 'red' : 'green'; }
-            }
-          }}
-        />
-
-        <Text>Add axis, set proper domain</Text>
-        <Svg height={defaultHeight} width={defaultWidth}>
-          <VictoryAxis
-            standalone={false}
-            domain={tradingHours.map(t => t * 1000)}
-            scale="time"
-          />
-          <VictoryAxis
-            dependentAxis
-            standalone={false}
-            domain={[lowestVolume, highestVolume]}
-            tickFormat={v => v / 100000000}
-          />
+        <View style={{ paddingBottom: 50 }}>
+          <Text heading>Volume chart</Text>
+          <Text>basic volume chart using VictoryBar</Text>
           <VictoryBar
-            domain={{
-              x: tradingHours.map(t => t * 1000)
-            }}
-            standalone={false}
+            height={200}
             data={ticks}
-            x={(d) => d.time * 1000}
+            x={(d) => d.time}
+            y={'volume'}
+          />
+
+          <Text>add some color</Text>
+          <VictoryBar
+            height={200}
+            data={ticks}
+            x={(d) => d.time}
             y={'volume'}
             style={{
               data: {
@@ -69,8 +42,72 @@ class VolumeChart extends Component {
               }
             }}
           />
-        </Svg>
 
+          <Text>Add axis, set proper domain</Text>
+          <Svg height={defaultHeight} width={defaultWidth}>
+            <VictoryAxis
+              standalone={false}
+              domain={tradingHours.map(t => t * 1000)}
+              scale="time"
+            />
+            <VictoryAxis
+              dependentAxis
+              standalone={false}
+              domain={[lowestVolume, highestVolume]}
+              tickFormat={v => v / 100000000}
+            />
+            <VictoryBar
+              domain={{
+                x: tradingHours.map(t => t * 1000)
+              }}
+              standalone={false}
+              data={ticks}
+              x={(d) => d.time * 1000}
+              y={'volume'}
+              style={{
+                data: {
+                  fill: (d) => { return d.mark ? 'red' : 'green'; }
+                }
+              }}
+            />
+          </Svg>
+
+          <Text>remove the default padding to make the volume chart more compact and display fewer tickCount</Text>
+          <Svg height={100} width={defaultWidth}>
+            <VictoryAxis
+              height={100}
+              padding={{ left: 50, top: 0, bottom: 0, right: 50 }}
+              standalone={false}
+              domain={tradingHours.map(t => t * 1000)}
+              scale="time"
+            />
+            <VictoryAxis
+              dependentAxis
+              padding={{ left: 50, top: 5, bottom: 0, right: 50 }}
+              height={100}
+              standalone={false}
+              domain={[lowestVolume, highestVolume]}
+              tickFormat={v => v / 100000000}
+              tickCount={2}
+            />
+            <VictoryBar
+              padding={{ left: 50, top: 5, bottom: 0, right: 50 }}
+              height={100}
+              domain={{
+                x: tradingHours.map(t => t * 1000)
+              }}
+              standalone={false}
+              data={ticks}
+              x={(d) => d.time * 1000}
+              y={'volume'}
+              style={{
+                data: {
+                  fill: (d) => { return d.mark ? 'red' : 'green'; }
+                }
+              }}
+            />
+          </Svg>
+        </View>
       </ScrollView>
     );
   }
