@@ -186,6 +186,10 @@ class MultipleAxes extends Component {
             standalone={false}
             scale="time"
             domain={tradingHours.map(t => t * 1000)}
+            style={{
+              axis: { strokeWidth: 1, stroke: '#ddd' },
+              ticks: { strokeWidth: 1, stroke: '#ddd' }
+            }}
           />
           <VictoryAxis
             dependentAxis
