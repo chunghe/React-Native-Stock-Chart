@@ -26,6 +26,9 @@ class Demos extends Component {
         <TouchableOpacity onPress={() => handlePress('VolumeChart')}>
           <Text>Volume Chart</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('StockChartWithVolume')}>
+          <Text>Stock Chart with Volume</Text>
+        </TouchableOpacity>
 
       </ScrollView>
     );

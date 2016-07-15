@@ -9,6 +9,7 @@ import BasicStockChart from '../demos/BasicStockChart';
 import ChartWithAxis from '../demos/ChartWithAxis';
 import MultipleAxes from '../demos/MultipleAxes';
 import VolumeChart from '../demos/VolumeChart';
+import StockChartWithVolume from '../demos/StockChartWithVolume';
 
 const {
   CardStack: NavigationCardStack,
@@ -25,7 +26,8 @@ class AppContainer extends React.Component {
       BasicStockChart,
       ChartWithAxis,
       MultipleAxes,
-      VolumeChart
+      VolumeChart,
+      StockChartWithVolume
     };
 
     const toRender = componentsMapping[route.key] || null;
