@@ -9,6 +9,7 @@ import {
   VictoryBar,
   VictoryLine,
   VictoryAxis,
+  VictoryArea
 } from 'victory-chart-native';
 import Svg from 'react-native-svg';
 
@@ -34,7 +35,7 @@ class StockChartWithVolume extends Component {
           <Text heading>Combine Stock Chart with Volume Chart</Text>
 
           <Text>put two charts together</Text>
-          <Svg height={defaultHeight} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
+          <Svg height={defaultHeight} width={defaultWidth}>
             <VictoryAxis
               dependentAxis
               height={defaultHeight}
@@ -64,20 +65,21 @@ class StockChartWithVolume extends Component {
               }}
             />
 
-            <VictoryLine
+            <VictoryArea
               standalone={false}
               padding={{ left: 50, top: 0, bottom: 0, right: 50 }}
               data={ticks}
               domain={{
-                x: tradingHours.map(t => t * 1000)
+                x: tradingHours.map(t => t * 1000),
+                y: [lowestPrice, highestPrice]
               }}
               x={(d) => new Date(d.time * 1000)}
               y={'price'}
               height={defaultHeight}
               style={{
                 data: {
-                  stroke: '#61c3bb',
-                  strokeWidth: 1.5
+                  stroke: 'rgba(0, 102, 221, 0.75)',
+                  fill: 'rgba(237, 247, 255, 0.75)',
                 }
               }}
             />
@@ -101,7 +103,7 @@ class StockChartWithVolume extends Component {
             />
           </Svg>
 
-          <Svg height={100} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
+          <Svg height={100} width={defaultWidth}>
             <VictoryAxis
               height={100}
               padding={{ left: 50, top: 0, bottom: 20, right: 50 }}
