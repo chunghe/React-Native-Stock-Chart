@@ -144,6 +144,14 @@ class MultipleAxes extends Component {
             standalone={false}
             domain={[lowestPrice, highestPrice]}
             tickFormat={(t) => util.tickFormatPercent(t, previousClose)}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
           <VictoryLine
             standalone={false}
@@ -198,6 +206,14 @@ class MultipleAxes extends Component {
             standalone={false}
             domain={[lowestPrice, highestPrice]}
             tickFormat={(t) => util.tickFormatPercent(t, previousClose)}
+            style={{
+              grid: {
+                stroke: '#ddd',
+                strokeWidth: 1
+              },
+              axis: { stroke: 'transparent' },
+              ticks: { stroke: 'transparent' }
+            }}
           />
           <VictoryArea
             standalone={false}
