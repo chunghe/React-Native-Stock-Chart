@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, InteractionManager, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   VictoryAxis,
 	VictoryBar,
@@ -7,6 +7,7 @@ import {
 import Svg from 'react-native-svg';
 
 import Text from '../components/Text';
+import Loading from '../components/Loading';
 import data from '../data';
 
 const defaultHeight = 300;
@@ -16,8 +17,22 @@ const highestVolume = Math.max(...volumes);
 const lowestVolume = Math.min(...volumes);
 
 class VolumeChart extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false
+    };
+  }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ isReady: true });
+    });
+  }
   render() {
     const { ticks, tradingHours } = data;
+    if (!this.state.isReady) {
+      return <Loading />;
+    }
     return (
       <ScrollView style={styles.container}>
         <View style={{ paddingBottom: 50 }}>

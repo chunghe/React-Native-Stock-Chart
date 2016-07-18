@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { InteractionManager, ScrollView, StyleSheet } from 'react-native';
 import {
   VictoryAxis,
   VictoryLine,
@@ -7,11 +7,26 @@ import {
 } from 'victory-chart-native';
 
 import Text from '../components/Text';
+import Loading from '../components/Loading';
 import data from '../data';
 
 class ChartWithAxis extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false
+    };
+  }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ isReady: true });
+    });
+  }
   render() {
     const { ticks, tradingHours, highestPrice, lowestPrice, previousClose } = data;
+    if (!this.state.isReady) {
+      return <Loading />;
+    }
     return (
       <ScrollView style={styles.container}>
         <Text heading>Line Chart with Axis</Text>

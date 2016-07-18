@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  InteractionManager,
   View,
   Dimensions,
   ScrollView,
@@ -14,6 +15,7 @@ import {
 import Svg from 'react-native-svg';
 
 import Text from '../components/Text';
+import Loading from '../components/Loading';
 import data from '../data';
 import * as util from '../util';
 
@@ -23,11 +25,23 @@ const volumes = data.ticks.map( d => d.volume);
 const highestVolume = Math.max(...volumes);
 const lowestVolume = Math.min(...volumes);
 
-// #61c3bb
-
 class StockChartWithVolume extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false
+    };
+  }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ isReady: true });
+    });
+  }
   render() {
     const { ticks, tradingHours, lowestPrice, highestPrice, previousClose } = data;
+    if (!this.state.isReady) {
+      return <Loading />;
+    }
 
     return (
       <ScrollView style={styles.container}>

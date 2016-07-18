@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { InteractionManager, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import {
   VictoryArea,
   VictoryAxis,
@@ -7,6 +7,7 @@ import {
 } from 'victory-chart-native';
 import Svg  from 'react-native-svg';
 
+import Loading from '../components/Loading';
 import Text from '../components/Text';
 import data from '../data';
 import * as util from '../util';
@@ -15,8 +16,22 @@ const defaultHeight = 300;
 const defaultWidth = Dimensions.get('window').width;
 
 class MultipleAxes extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false
+    };
+  }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ isReady: true });
+    });
+  }
   render() {
     const { ticks, tradingHours, lowestPrice, highestPrice, previousClose } = data;
+    if (!this.state.isReady) {
+      return <Loading />;
+    }
     return (
       <ScrollView style={styles.container}>
         <Text>let's add another y-axis to display percentage change, if you try to put more than one y-axis in a VictoryChart , it will cause an error, you have to wrap two y-axis in a Svg element from 'react-native-svg' and calculate the domain manually</Text>
