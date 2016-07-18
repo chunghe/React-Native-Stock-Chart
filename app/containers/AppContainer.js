@@ -18,6 +18,11 @@ const {
 
 
 class AppContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this._renderHeader = this._renderHeader.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+  }
 
   _renderScene({ scene }) {
     const { route } = scene;
@@ -40,10 +45,12 @@ class AppContainer extends React.Component {
   }
 
   _renderHeader(sceneProps) {
+    const { handleNavigateBack } = this.props;
     return (
       <NavigationHeader
         {...sceneProps}
 
+        onNavigateBack={handleNavigateBack}
         renderTitleComponent={props => {
           // const route = props.scene.route;
           return <NavigationHeader.Title>Stock Chart</NavigationHeader.Title>;
@@ -53,7 +60,7 @@ class AppContainer extends React.Component {
   }
 
   render() {
-    const { navigationState, onNavigate } = this.props;
+    const { navigationState, handleNavigateBack } = this.props;
 
     return (
       // Redux is handling the reduction of our state for us. We grab the navigationState
@@ -61,7 +68,7 @@ class AppContainer extends React.Component {
       <NavigationCardStack
         navigationState={navigationState}
         style={styles.outerContainer}
-        onNavigate={onNavigate}
+        onNavigateBack={handleNavigateBack}
         renderScene={this._renderScene}
         renderOverlay={this._renderHeader}
       />
@@ -72,6 +79,7 @@ class AppContainer extends React.Component {
 
 AppContainer.propTypes = {
   navigationState: PropTypes.object,
+  handleNavigateBack: PropTypes.func.isRequired,
   onNavigate: PropTypes.func.isRequired
 };
 
@@ -94,6 +102,9 @@ export default connect(
     navigationState: state.routing
   }),
   dispatch => ({
+    handleNavigateBack: (action) => {
+      dispatch(navigatePop());
+    },
     onNavigate: (action) => {
       // Two types of actions are likely to be passed, both representing "back"
       // style actions. Check if a type has been indicated, and try to match it.
