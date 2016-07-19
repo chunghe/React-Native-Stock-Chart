@@ -20,7 +20,7 @@ class Demos extends Component {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handlePress('MultipleAxes')}>
-          <Text>Line Chart with multiple Axis</Text>
+          <Text>Line Chart with multiple Axes</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handlePress('VolumeChart')}>

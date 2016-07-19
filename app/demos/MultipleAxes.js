@@ -34,6 +34,7 @@ class MultipleAxes extends Component {
     }
     return (
       <ScrollView style={styles.container}>
+        <Text heading>Line chart with multiple Axes</Text>
         <Text>let's add another y-axis to display percentage change, if you try to put more than one y-axis in a VictoryChart , it will cause an error, you have to wrap two y-axis in a Svg element from 'react-native-svg' and calculate the domain manually</Text>
         <Text>make sure you set standalone: false or it will crash</Text>
         <Text>let's begin with the very basic chart with 2 y-axes</Text>

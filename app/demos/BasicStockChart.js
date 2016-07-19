@@ -11,33 +11,46 @@ import data from '../data';
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
-console.log('d3scale', d3Scale);
+const defaultPadding = 50;
+const defaultWidth = 450 - defaultPadding * 2;
+const defaultHeight = 300 - defaultPadding * 2;
 
 class BasicStockChart extends Component {
-  render() {
+  getPath() {
     const { ticks, lowestPrice, highestPrice } = data;
-    const defaultPadding = 50;
-    const defaultWidth = 450 - defaultPadding * 2;
-    const defaultHeight = 300 - defaultPadding * 2;
     const times = ticks.map(t => t.time * 1000);
-    const xScale = d3Scale.scaleLinear().domain([Math.min(...times), Math.max(...times)]).range([0, defaultWidth]);
-    const yScale = d3Scale.scaleLinear().domain([lowestPrice, highestPrice]).range([0, defaultHeight].reverse()); //   reverse bacause the origin point of d3 svg is top left
-    const lineFunction = d3Shape
-                          .line()
-                          .x(d => xScale(d.time * 1000))
-                          .y(d => yScale(d.price));
+    const xScale =
+            d3Scale
+              .scaleLinear()
+              .domain([Math.min(...times), Math.max(...times)])
+              .range([0, defaultWidth]);
+    const yScale =
+            d3Scale
+              .scaleLinear()
+              .domain([lowestPrice, highestPrice])
+              .range([0, defaultHeight].reverse()); //   reverse bacause the origin point of d3 svg is top left
+    const lineFunction =
+            d3Shape
+              .line()
+              .x(d => xScale(d.time * 1000))
+              .y(d => yScale(d.price));
 
-    const path = lineFunction(ticks);
-    console.log('pah', path);
+    return lineFunction(ticks);
+  }
+
+  render() {
+    const { ticks } = data;
+    const path = this.getPath();
+
     return (
       <ScrollView style={styles.container}>
         <Text heading>Basic Line Chart</Text>
 
-        <Text>Draw basic line chart using only d3Scale/d3Shape, occupy full svg height/width</Text>
+        <Text>Under the hood, victor-chart-native use d3scale/d3shape to compute the path and let react-native-svg draw it</Text>
+        <Text>Let's draw the stock line chart using only d3scale/d3shape</Text>
         <Svg height={defaultHeight} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
           <Path d={path} stroke="blue" strokeWidth={2} fill="none" />
         </Svg>
-
         <Text>Draw basic line chart using VictoryLine</Text>
         <VictoryLine
           data={ticks}
