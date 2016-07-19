@@ -53,6 +53,7 @@ class VolumeChart extends Component {
             y={'volume'}
             style={{
               data: {
+                width: 2,
                 fill: (d) => { return d.mark ? 'red' : 'green'; }
               }
             }}
@@ -81,6 +82,7 @@ class VolumeChart extends Component {
               y={'volume'}
               style={{
                 data: {
+                  width: 1,
                   fill: (d) => { return d.mark ? 'red' : 'green'; }
                 }
               }}
@@ -117,6 +119,7 @@ class VolumeChart extends Component {
               y={'volume'}
               style={{
                 data: {
+                  width: 1,
                   fill: (d) => { return d.mark ? 'red' : 'green'; }
                 }
               }}

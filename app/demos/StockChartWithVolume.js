@@ -154,6 +154,7 @@ class StockChartWithVolume extends Component {
               y={'volume'}
               style={{
                 data: {
+                  width: 1,
                   fill: (d) => { return d.mark ? 'red' : 'green'; }
                 }
               }}
