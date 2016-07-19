@@ -9,4 +9,4 @@ $ react-native run-ios
 
 ## Screenshots
 ![Rect](./screenshots/stock-chart.png)
-
+![Rect](./screenshots/screenshot.gif)
