@@ -15,7 +15,7 @@ const defaultPadding = 50;
 const defaultWidth = 450 - defaultPadding * 2;
 const defaultHeight = 300 - defaultPadding * 2;
 
-class BasicLineChart extends Component {
+class CustomStockChart extends Component {
   getPath() {
     const { ticks, lowestPrice, highestPrice } = data;
     const times = ticks.map(t => t.time * 1000);
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BasicLineChart;
+export default CustomStockChart;
