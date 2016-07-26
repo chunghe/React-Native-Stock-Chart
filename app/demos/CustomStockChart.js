@@ -106,7 +106,6 @@ class CustomStockChart extends Component {
   render() {
     const path = this.getStockPath();
     const values = this.getPriceTickValues();
-    console.log('->', this.getTimeTickValues());
 
     return (
       <ScrollView style={styles.container}>
