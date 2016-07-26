@@ -144,7 +144,7 @@ class CustomStockChart extends Component {
           </G>
           <Path d={`M0 ${defaultStockChartHeight + defaultVolumeChartHeight} ${defaultWidth} ${defaultVolumeChartHeight + defaultStockChartHeight}`} stroke="rgb(155, 155, 155)" />
           {
-            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y} textAnchor={index === 0 ? 'start': 'middle'}>{p.time}</Text>)
+            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start': 'middle'}>{p.time}</Text>)
           }
           {
             this.getTimeTickValues().map((p, index) =>
