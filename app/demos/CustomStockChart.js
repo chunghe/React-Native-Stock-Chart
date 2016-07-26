@@ -1,66 +1,89 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import {
-  VictoryLine,
-} from 'victory-chart-native';
-
-import Svg, { Path } from 'react-native-svg';
-import Text from '../components/Text';
+import { ScrollView, StyleSheet, Dimensions } from 'react-native';
+import Svg, { Path, Text } from 'react-native-svg';
 import data from '../data';
 
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
+import { VictoryLine } from 'victory-chart-native';
+
+
 const defaultPadding = 50;
-const defaultWidth = 450 - defaultPadding * 2;
-const defaultHeight = 300 - defaultPadding * 2;
+const defaultWidth = Dimensions.get('window').width;
+const defaultHeight = 175;
 
 class CustomStockChart extends Component {
-  getPath() {
-    const { ticks, lowestPrice, highestPrice } = data;
-    const times = ticks.map(t => t.time * 1000);
-    const xScale =
-            d3Scale
-              .scaleTime()
-              .domain([Math.min(...times), Math.max(...times)])
-              .range([0, defaultWidth]);
-    const yScale =
-            d3Scale
-              .scaleLinear()
-              .domain([lowestPrice, highestPrice])
-              .range([0, defaultHeight].reverse()); //   reverse bacause the origin point of d3 svg is top left
+  constructor(props) {
+    super(props);
+    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    this.xScale =
+      d3Scale
+        .scaleTime()
+        .domain(tradingHours.map( t => t * 1000))
+        .range([0, defaultWidth]);
+    this.yScale =
+      d3Scale
+        .scaleLinear()
+        .domain([lowestPrice, highestPrice])
+        // reverse bacause the origin point of d3 svg is top left
+        .range([0, defaultHeight].reverse());
+  }
+
+  getStockPath() {
+    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const { xScale, yScale } = this;
     const lineFunction =
             d3Shape
               .line()
               .x(d => xScale(d.time * 1000))
               .y(d => yScale(d.price));
 
-    const yTicks = xScale.ticks(5);
-    console.log('yTicks', yTicks.map( t => t))
-
-
     return lineFunction(ticks);
+  }
+
+
+  getTickValues() {
+    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const yTicks = this.yScale.ticks(5);
+    const xScaled = tradingHours.map( t => this.xScale(t * 1000));
+    return yTicks.map(tick => {
+      const yScaled = this.yScale(tick);
+      return {
+        x1: xScaled[0],
+        y1: yScaled,
+        x2: xScaled[1],
+        y2: yScaled
+      };
+    })
+  }
+
+  getTickLabel() {
+
+  }
+
+  getTickPath() {
+    const values = this.getTickValues();
+    console.log('values', values);
+    return values.reduce((prev, current) => {
+      return `${prev} M${current.x1} ${current.y1} ${current.x2} ${current.y2}`;
+    }, '');
+
   }
 
   render() {
     const { ticks } = data;
-    const path = this.getPath();
+    const path = this.getStockPath();
+    console.log('->', this.getTickPath());
 
     return (
       <ScrollView style={styles.container}>
-        <Text heading>Basic Line Chart</Text>
-
-        <Text>Under the hood, victor-chart-native use d3scale/d3shape to compute the path and let react-native-svg draw it</Text>
-        <Text>Let's draw the stock line chart using only d3scale/d3shape</Text>
-        <Svg height={defaultHeight} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
-          <Path d={path} stroke="blue" strokeWidth={2} fill="none" />
+        <Svg height={defaultHeight} width={defaultWidth}>
+          <Path d={path} stroke="rgb(70, 171, 209)" strokeWidth={1.5} fill="none" />
+          <Path d={this.getTickPath()} stroke="rgb(153, 153, 153)" />
+          <Text x="0" y="31.633954857701298" style={{fill: '#252525', fontSize: 14, stroke: 'transparent', backgroundColor: '#d9d9d9'}}>8860</Text>
+          <Text x="0" y="65.98135426888949" style={{fill: '#252525', fontSize: 14, stroke: 'transparent', backgroundColor: '#d9d9d9'}}>8860</Text>
         </Svg>
-        <Text>Draw basic line chart using VictoryLine</Text>
-        <VictoryLine
-          data={ticks}
-          x={(d) => d.time}
-          y={'price'}
-        />
       </ScrollView>
     );
   }
