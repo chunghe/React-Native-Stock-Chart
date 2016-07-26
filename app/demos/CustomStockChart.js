@@ -28,9 +28,13 @@ class CustomStockChart extends Component {
         .domain([lowestPrice, highestPrice])
         // reverse bacause the origin point of d3 svg is top left
         .range([0, defaultStockChartHeight].reverse());
+      console.log('ticks', ticks);
 		this.volumes = ticks.map(t => t.volume);
 		this.volumeScale =
 			d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
+    const chartPercent = (ticks[ticks.length - 1].time - tradingHours[0])/ (tradingHours[1] - tradingHours[0]);
+      this.barWidth =  chartPercent * defaultWidth / this.volumes.length;
+      console.log('barWidth', this.barWidth);
   }
 
   getStockPath() {
@@ -90,7 +94,6 @@ class CustomStockChart extends Component {
   render() {
     const path = this.getStockPath();
     const values = this.getStockTickValues();
-console.log('->', this.volumeScale(this.volumes[0]));
 
     return (
       <ScrollView style={styles.container}>
@@ -111,16 +114,15 @@ console.log('->', this.volumeScale(this.volumes[0]));
           <G style={{ backgroundColor: '#efefef'}}>
 					{
 						this.volumes.map( (volume, index) => {
-							const width = 1;
+							const width = this.barWidth;
 							const height = this.volumeScale(volume);
-							console.log('volume', volume, 'height', height);
 							return (
 								<Rect
 									key={index}
 									x={index * width}
 									y={defaultStockChartHeight + defaultVolumeChartHeight - height}
 									height={height}
-									width={width}
+									width={width * 0.7}
 									fill={Math.random() < 0.5 ? 'red' : 'green'}
 								/>
 							)
