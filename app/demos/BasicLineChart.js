@@ -35,10 +35,6 @@ class BasicLineChart extends Component {
               .x(d => xScale(d.time * 1000))
               .y(d => yScale(d.price));
 
-    const yTicks = xScale.ticks(5);
-    console.log('yTicks', yTicks.map( t => t))
-
-
     return lineFunction(ticks);
   }
 

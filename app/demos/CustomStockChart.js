@@ -34,7 +34,7 @@ class CustomStockChart extends Component {
     this.volumes = ticks.map(t => t.volume);
     this.volumeScale =
       d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
-    const chartPercent = (ticks[ticks.length - 1].time - tradingHours[0])/ (tradingHours[1] - tradingHours[0]);
+    const chartPercent = (ticks[ticks.length - 1].time - tradingHours[0]) / (tradingHours[1] - tradingHours[0]);
     this.barWidth =  chartPercent * defaultWidth / this.volumes.length;
   }
 
@@ -82,13 +82,13 @@ class CustomStockChart extends Component {
   getTimeTickValues() {
     const timeTicks = this.timeScale.ticks(3);
     const timePositions = timeTicks.map(t => this.timeScale(t.valueOf()));
-    const formatTime = d3TimeFormat.timeFormat('%H:%M')
+    const formatTime = d3TimeFormat.timeFormat('%H:%M');
     return timeTicks.map( (t, index) => {
       return {
         x: timePositions[index],
         y: defaultStockChartHeight + defaultVolumeChartHeight,
         time: formatTime(timeTicks[index])
-      }
+      };
     });
   }
 
@@ -124,27 +124,27 @@ class CustomStockChart extends Component {
             ))
           }
           </G>
-          <G style={{ backgroundColor: '#efefef'}}>
+          <G style={{ backgroundColor: '#efefef' }}>
 					{
-						this.volumes.map( (volume, index) => {
-							const width = this.barWidth;
-							const height = this.volumeScale(volume);
-							return (
-								<Rect
-									key={index}
-									x={index * width}
-									y={defaultStockChartHeight + defaultVolumeChartHeight - height}
-									height={height}
-									width={width * 0.7}
-									fill={Math.random() < 0.5 ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
-								/>
-							)
-						})
+            this.volumes.map( (volume, index) => {
+              const width = this.barWidth;
+              const height = this.volumeScale(volume);
+              return (
+                <Rect
+                  key={index}
+                  x={index * width}
+                  y={defaultStockChartHeight + defaultVolumeChartHeight - height}
+                  height={height}
+                  width={width * 0.7}
+                  fill={Math.random() < 0.5 ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
+                />
+              );
+            })
 					}
           </G>
           <Path d={`M0 ${defaultStockChartHeight + defaultVolumeChartHeight} ${defaultWidth} ${defaultVolumeChartHeight + defaultStockChartHeight}`} stroke="rgb(155, 155, 155)" />
           {
-            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start': 'middle'}>{p.time}</Text>)
+            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start' : 'middle'}>{p.time}</Text>)
           }
           {
             this.getTimeTickValues().map((p, index) =>
