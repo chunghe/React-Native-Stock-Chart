@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { navigatePush, navigatePop } from '../redux/modules/routing';
 
 import Demos from '../demos';
-import BasicStockChart from '../demos/BasicStockChart';
+import BasicLineChart from '../demos/BasicLineChart';
 import ChartWithAxis from '../demos/ChartWithAxis';
 import MultipleAxes from '../demos/MultipleAxes';
 import VolumeChart from '../demos/VolumeChart';
@@ -28,7 +28,7 @@ class AppContainer extends React.Component {
     const { route } = scene;
     const componentsMapping = {
       Demos,
-      BasicStockChart,
+      BasicLineChart,
       ChartWithAxis,
       MultipleAxes,
       VolumeChart,
