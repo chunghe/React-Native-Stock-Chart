@@ -9,7 +9,8 @@ import * as d3Scale from 'd3-scale';
 // import { VictoryLine } from 'victory-chart-native';
 
 const defaultWidth = Dimensions.get('window').width;
-const defaultHeight = 200;
+const defaultStockChartHeight = 200;
+const defaultVolumeChartHeight = 120;
 const tickCount = 3;
 
 class CustomStockChart extends Component {
@@ -26,7 +27,7 @@ class CustomStockChart extends Component {
         .scaleLinear()
         .domain([lowestPrice, highestPrice])
         // reverse bacause the origin point of d3 svg is top left
-        .range([0, defaultHeight].reverse());
+        .range([0, defaultStockChartHeight].reverse());
   }
 
   getStockPath() {
@@ -54,7 +55,7 @@ class CustomStockChart extends Component {
   }
 
 
-  getTickValues() {
+  getStockTickValues() {
     const { tradingHours, previousClose } = data;
     const yTicks = this.yScale.ticks(tickCount);
     const xScaled = tradingHours.map( t => this.xScale(t * 1000));
@@ -85,24 +86,22 @@ class CustomStockChart extends Component {
 
   render() {
     const path = this.getStockPath();
-    const values = this.getTickValues();
-    console.log('path', path);
-    console.log('getStockArea', this.getStockArea(values));
+    const values = this.getStockTickValues();
 
     return (
       <ScrollView style={styles.container}>
-        <Svg height={defaultHeight} width={defaultWidth}>
+        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
           <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
           <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
-          <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" />
+          <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" strokeDasharray="2,2" />
           <G>
           {
-            values.map((value, index) => <Text key={index} x={value.x1} y={value.y1}>{value.tick}</Text>)
-          }
-          </G>
-          <G>
-          {
-            values.map((value, index) => <Text key={index} x={value.x2} y={value.y1} textAnchor="end">{`${value.percent}%`}</Text>)
+            values.map((value, index) => (
+              <G key={index}>
+                <Text x={value.x1} y={value.y1}>{value.tick}</Text>
+                <Text x={value.x2} y={value.y1} textAnchor="end">{`${value.percent}%`}</Text>
+              </G>
+            ))
           }
           </G>
         </Svg>
