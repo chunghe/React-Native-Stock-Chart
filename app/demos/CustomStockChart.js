@@ -110,7 +110,7 @@ class CustomStockChart extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight + bottomAxisHeight} width={defaultWidth} style={{backgroundColor: '#efefef'}}>
+        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight + bottomAxisHeight} width={defaultWidth}>
           <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
           <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
           <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" strokeDasharray="2,2" />
@@ -145,6 +145,11 @@ class CustomStockChart extends Component {
           <Path d={`M0 ${defaultStockChartHeight + defaultVolumeChartHeight} ${defaultWidth} ${defaultVolumeChartHeight + defaultStockChartHeight}`} stroke="rgb(155, 155, 155)" />
           {
             this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y} textAnchor={index === 0 ? 'start': 'middle'}>{p.time}</Text>)
+          }
+          {
+            this.getTimeTickValues().map((p, index) =>
+              <Rect key={index} x={p.x} y={p.y} fill="rgb(155, 155, 155)" width="1" height="5" />
+            )
           }
         </Svg>
       </ScrollView>
