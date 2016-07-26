@@ -11,7 +11,9 @@ import { VictoryLine } from 'victory-chart-native';
 
 const defaultPadding = 50;
 const defaultWidth = Dimensions.get('window').width;
-const defaultHeight = 175;
+const defaultHeight = 200;
+const padding = 10;
+const tickCount = 3;
 
 class CustomStockChart extends Component {
   constructor(props) {
@@ -46,10 +48,22 @@ class CustomStockChart extends Component {
     return lineFunction(ticks);
   }
 
+  getStockArea() {
+    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const { xScale, yScale } = this;
+    const areaFunction =
+            d3Shape
+              .area()
+              .x(d => xScale(d.time * 1000))
+              .y(d => yScale(d.price))
+              .y1(() => yScale(lowestPrice));
+    return areaFunction(ticks);
+  }
+
 
   getTickValues() {
     const { ticks, lowestPrice, highestPrice, tradingHours, previousClose } = data;
-    const yTicks = this.yScale.ticks(5);
+    const yTicks = this.yScale.ticks(tickCount);
     const xScaled = tradingHours.map( t => this.xScale(t * 1000));
     const roundDecimal = this.roundDecimal;
     return yTicks.map(tick => {
@@ -82,12 +96,14 @@ class CustomStockChart extends Component {
     const { ticks } = data;
     const path = this.getStockPath();
     const values = this.getTickValues();
-    console.log('values', values);
+    console.log('path', path);
+    console.log('getStockArea', this.getStockArea(values));
 
     return (
       <ScrollView style={styles.container}>
         <Svg height={defaultHeight} width={defaultWidth}>
-          <Path d={path} stroke="rgb(70, 171, 209)" strokeWidth={1.5} fill="none" />
+          <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
+          <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
           <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" />
           <G>
           {
