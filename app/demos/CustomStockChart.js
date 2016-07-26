@@ -5,78 +5,90 @@ import data from '../data';
 
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
+import * as d3TimeFormat from 'd3-time-format';
+console.log('d3TimeFormat', d3TimeFormat);
 
 // import { VictoryLine } from 'victory-chart-native';
 
 const defaultWidth = Dimensions.get('window').width;
 const defaultStockChartHeight = 200;
-const defaultVolumeChartHeight = 120;
+const defaultVolumeChartHeight = 100;
+const bottomAxisHeight = 20;
 const tickCount = 3;
 
 class CustomStockChart extends Component {
   constructor(props) {
     super(props);
     const { ticks, lowestPrice, highestPrice, tradingHours } = data;
-    this.xScale =
+    this.timeScale =
       d3Scale
         .scaleTime()
         .domain(tradingHours.map( t => t * 1000))
         .range([0, defaultWidth]);
-    this.yScale =
+    this.priceScale =
       d3Scale
         .scaleLinear()
         .domain([lowestPrice, highestPrice])
         // reverse bacause the origin point of d3 svg is top left
         .range([0, defaultStockChartHeight].reverse());
-      console.log('ticks', ticks);
-		this.volumes = ticks.map(t => t.volume);
-		this.volumeScale =
-			d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
+    this.volumes = ticks.map(t => t.volume);
+    this.volumeScale =
+      d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
     const chartPercent = (ticks[ticks.length - 1].time - tradingHours[0])/ (tradingHours[1] - tradingHours[0]);
-      this.barWidth =  chartPercent * defaultWidth / this.volumes.length;
-      console.log('barWidth', this.barWidth);
+    this.barWidth =  chartPercent * defaultWidth / this.volumes.length;
   }
 
   getStockPath() {
     const { ticks, } = data;
-    const { xScale, yScale } = this;
     const lineFunction =
             d3Shape
               .line()
-              .x(d => xScale(d.time * 1000))
-              .y(d => yScale(d.price));
+              .x(d => this.timeScale(d.time * 1000))
+              .y(d => this.priceScale(d.price));
 
     return lineFunction(ticks);
   }
 
   getStockArea() {
     const { ticks, lowestPrice } = data;
-    const { xScale, yScale } = this;
     const areaFunction =
             d3Shape
               .area()
-              .x(d => xScale(d.time * 1000))
-              .y(d => yScale(d.price))
-              .y1(() => yScale(lowestPrice));
+              .x(d => this.timeScale(d.time * 1000))
+              .y(d => this.priceScale(d.price))
+              .y1(() => this.priceScale(lowestPrice));
     return areaFunction(ticks);
   }
 
 
-  getStockTickValues() {
+  getPriceTickValues() {
     const { tradingHours, previousClose } = data;
-    const yTicks = this.yScale.ticks(tickCount);
-    const xScaled = tradingHours.map( t => this.xScale(t * 1000));
+    const yTicks = this.priceScale.ticks(tickCount);
+    const timeScaled = tradingHours.map( t => this.timeScale(t * 1000));
     const roundDecimal = this.roundDecimal;
     return yTicks.map(tick => {
-      const yScaled = this.yScale(tick);
+      const priceScaled = this.priceScale(tick);
       return {
-        x1: xScaled[0],
-        y1: yScaled,
-        x2: xScaled[1],
-        y2: yScaled,
+        x1: timeScaled[0],
+        y1: priceScaled,
+        x2: timeScaled[1],
+        y2: priceScaled,
         tick: String(tick),
         percent: roundDecimal((tick - previousClose) * 100 / previousClose)
       };
+    });
+  }
+
+  getTimeTickValues() {
+    const timeTicks = this.timeScale.ticks(3);
+    const timePositions = timeTicks.map(t => this.timeScale(t.valueOf()));
+    const formatTime = d3TimeFormat.timeFormat('%H:%M')
+    return timeTicks.map( (t, index) => {
+      return {
+        x: timePositions[index],
+        y: defaultStockChartHeight + defaultVolumeChartHeight,
+        time: formatTime(timeTicks[index])
+      }
     });
   }
 
@@ -93,11 +105,12 @@ class CustomStockChart extends Component {
 
   render() {
     const path = this.getStockPath();
-    const values = this.getStockTickValues();
+    const values = this.getPriceTickValues();
+    console.log('->', this.getTimeTickValues());
 
     return (
       <ScrollView style={styles.container}>
-        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight} width={defaultWidth} style={{backgroundColor: '#efefef'}}>
+        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight + bottomAxisHeight} width={defaultWidth} style={{backgroundColor: '#efefef'}}>
           <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
           <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
           <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" strokeDasharray="2,2" />
@@ -123,12 +136,16 @@ class CustomStockChart extends Component {
 									y={defaultStockChartHeight + defaultVolumeChartHeight - height}
 									height={height}
 									width={width * 0.7}
-									fill={Math.random() < 0.5 ? 'red' : 'green'}
+									fill={Math.random() < 0.5 ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
 								/>
 							)
 						})
 					}
           </G>
+          <Path d={`M0 ${defaultStockChartHeight + defaultVolumeChartHeight} ${defaultWidth} ${defaultVolumeChartHeight + defaultStockChartHeight}`} stroke="rgb(155, 155, 155)" />
+          {
+            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y} textAnchor={index === 0 ? 'start': 'middle'}>{p.time}</Text>)
+          }
         </Svg>
       </ScrollView>
     );
