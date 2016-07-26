@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Dimensions } from 'react-native';
-import Svg, {G,  Path, Text } from 'react-native-svg';
+import Svg, { G,  Path, Text } from 'react-native-svg';
 import data from '../data';
 
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
-import { VictoryLine } from 'victory-chart-native';
+// import { VictoryLine } from 'victory-chart-native';
 
-
-const defaultPadding = 50;
 const defaultWidth = Dimensions.get('window').width;
 const defaultHeight = 200;
-const padding = 10;
 const tickCount = 3;
 
 class CustomStockChart extends Component {
   constructor(props) {
     super(props);
-    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const { lowestPrice, highestPrice, tradingHours } = data;
     this.xScale =
       d3Scale
         .scaleTime()
@@ -32,12 +29,8 @@ class CustomStockChart extends Component {
         .range([0, defaultHeight].reverse());
   }
 
-  roundDecimal(n, decimal = 2) {
-    return Math.round(n * 100) / 100;
-  }
-
   getStockPath() {
-    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const { ticks, } = data;
     const { xScale, yScale } = this;
     const lineFunction =
             d3Shape
@@ -49,7 +42,7 @@ class CustomStockChart extends Component {
   }
 
   getStockArea() {
-    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
+    const { ticks, lowestPrice } = data;
     const { xScale, yScale } = this;
     const areaFunction =
             d3Shape
@@ -62,7 +55,7 @@ class CustomStockChart extends Component {
 
 
   getTickValues() {
-    const { ticks, lowestPrice, highestPrice, tradingHours, previousClose } = data;
+    const { tradingHours, previousClose } = data;
     const yTicks = this.yScale.ticks(tickCount);
     const xScaled = tradingHours.map( t => this.xScale(t * 1000));
     const roundDecimal = this.roundDecimal;
@@ -73,27 +66,24 @@ class CustomStockChart extends Component {
         y1: yScaled,
         x2: xScaled[1],
         y2: yScaled,
-        tick: '' + tick,
-        percent: roundDecimal((tick - previousClose) * 100/ previousClose)
+        tick: String(tick),
+        percent: roundDecimal((tick - previousClose) * 100 / previousClose)
       };
-    })
-  }
-
-  getTickLabel() {
-
-    const values = this.getTickValues();
-
+    });
   }
 
   getTickPath(values) {
     return values.reduce((prev, current) => {
       return `${prev} M${current.x1} ${current.y1} ${current.x2} ${current.y2}`;
     }, '');
-
   }
 
+  roundDecimal(n, decimal = 2) {
+    return Math.round(n * 100) / 100;
+  }
+
+
   render() {
-    const { ticks } = data;
     const path = this.getStockPath();
     const values = this.getTickValues();
     console.log('path', path);
@@ -107,12 +97,12 @@ class CustomStockChart extends Component {
           <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" />
           <G>
           {
-            values.map((value, index) => {console.log('value', value); return <Text key={index} x={value.x1} y={value.y1}>{value.tick}</Text>})
+            values.map((value, index) => <Text key={index} x={value.x1} y={value.y1}>{value.tick}</Text>)
           }
           </G>
           <G>
           {
-            values.map((value, index) => {console.log('value', value); return <Text key={index} x={value.x2} y={value.y1} textAnchor="end">{`${value.percent}%`}</Text>})
+            values.map((value, index) => <Text key={index} x={value.x2} y={value.y1} textAnchor="end">{`${value.percent}%`}</Text>)
           }
           </G>
         </Svg>
