@@ -11,7 +11,7 @@ class Demos extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <TouchableOpacity onPress={() => handlePress('BasicStockChart')}>
+        <TouchableOpacity onPress={() => handlePress('BasicLineChart')}>
           <Text>Basic Line Chart</Text>
         </TouchableOpacity>
 
