@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Dimensions } from 'react-native';
-import Svg, { G,  Path, Text } from 'react-native-svg';
+import Svg, { Rect, G,  Path, Text } from 'react-native-svg';
 import data from '../data';
 
 import * as d3Shape from 'd3-shape';
@@ -16,7 +16,7 @@ const tickCount = 3;
 class CustomStockChart extends Component {
   constructor(props) {
     super(props);
-    const { lowestPrice, highestPrice, tradingHours } = data;
+    const { ticks, lowestPrice, highestPrice, tradingHours } = data;
     this.xScale =
       d3Scale
         .scaleTime()
@@ -28,6 +28,9 @@ class CustomStockChart extends Component {
         .domain([lowestPrice, highestPrice])
         // reverse bacause the origin point of d3 svg is top left
         .range([0, defaultStockChartHeight].reverse());
+		this.volumes = ticks.map(t => t.volume);
+		this.volumeScale =
+			d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
   }
 
   getStockPath() {
@@ -87,10 +90,11 @@ class CustomStockChart extends Component {
   render() {
     const path = this.getStockPath();
     const values = this.getStockTickValues();
+console.log('->', this.volumeScale(this.volumes[0]));
 
     return (
       <ScrollView style={styles.container}>
-        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight} width={defaultWidth} style={{ backgroundColor: '#efefef' }}>
+        <Svg height={defaultStockChartHeight + defaultVolumeChartHeight} width={defaultWidth} style={{backgroundColor: '#efefef'}}>
           <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
           <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
           <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" strokeDasharray="2,2" />
@@ -103,6 +107,25 @@ class CustomStockChart extends Component {
               </G>
             ))
           }
+          </G>
+          <G style={{ backgroundColor: '#efefef'}}>
+					{
+						this.volumes.map( (volume, index) => {
+							const width = 1;
+							const height = this.volumeScale(volume);
+							console.log('volume', volume, 'height', height);
+							return (
+								<Rect
+									key={index}
+									x={index * width}
+									y={defaultStockChartHeight + defaultVolumeChartHeight - height}
+									height={height}
+									width={width}
+									fill={Math.random() < 0.5 ? 'red' : 'green'}
+								/>
+							)
+						})
+					}
           </G>
         </Svg>
       </ScrollView>
