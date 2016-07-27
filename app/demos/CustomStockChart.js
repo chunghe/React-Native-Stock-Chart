@@ -6,15 +6,12 @@ import data from '../data';
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 import * as d3TimeFormat from 'd3-time-format';
-console.log('d3TimeFormat', d3TimeFormat);
-
-// import { VictoryLine } from 'victory-chart-native';
 
 const defaultWidth = Dimensions.get('window').width;
 const defaultStockChartHeight = 200;
-const defaultVolumeChartHeight = 100;
+const defaultVolumeChartHeight = 80;
 const bottomAxisHeight = 20;
-const tickCount = 3;
+const priceTickCounts = 3;
 
 class CustomStockChart extends Component {
   constructor(props) {
@@ -33,7 +30,10 @@ class CustomStockChart extends Component {
         .range([0, defaultStockChartHeight].reverse());
     this.volumes = ticks.map(t => t.volume);
     this.volumeScale =
-      d3Scale.scaleLinear().domain([Math.min(...this.volumes), Math.max(...this.volumes)]).range([0, defaultVolumeChartHeight]);
+      d3Scale
+      .scaleLinear()
+      .domain([Math.min(...this.volumes), Math.max(...this.volumes)])
+      .range([0, defaultVolumeChartHeight]);
     const chartPercent = (ticks[ticks.length - 1].time - tradingHours[0]) / (tradingHours[1] - tradingHours[0]);
     this.barWidth =  chartPercent * defaultWidth / this.volumes.length;
   }
@@ -63,7 +63,7 @@ class CustomStockChart extends Component {
 
   getPriceTickValues() {
     const { tradingHours, previousClose } = data;
-    const yTicks = this.priceScale.ticks(tickCount);
+    const yTicks = this.priceScale.ticks(priceTickCounts);
     const timeScaled = tradingHours.map( t => this.timeScale(t * 1000));
     const roundDecimal = this.roundDecimal;
     return yTicks.map(tick => {
@@ -86,7 +86,7 @@ class CustomStockChart extends Component {
     return timeTicks.map( (t, index) => {
       return {
         x: timePositions[index],
-        y: defaultStockChartHeight + defaultVolumeChartHeight,
+        y: defaultVolumeChartHeight,
         time: formatTime(timeTicks[index])
       };
     });
@@ -102,54 +102,56 @@ class CustomStockChart extends Component {
     return Math.round(n * 100) / 100;
   }
 
-
   render() {
-    const path = this.getStockPath();
     const values = this.getPriceTickValues();
+    const { ticks } = data;
 
     return (
       <ScrollView style={styles.container}>
         <Svg height={defaultStockChartHeight + defaultVolumeChartHeight + bottomAxisHeight} width={defaultWidth}>
-          <Path d={this.getStockArea(values)} fill="rgb(237, 247, 255, 0.75)" />
-          <Path d={path} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
-          <Path d={this.getTickPath(values)} stroke="rgb(153, 153, 153)" strokeDasharray="2,2" />
-          <G>
+          <Path d={this.getStockArea(values)} fill="rgb(209, 237, 255, 0.85)" />
+          <Path d={this.getStockPath()} stroke="rgba(0, 102, 221, 0.75)" fill="none" />
+          <Path d={this.getTickPath(values)} stroke="rgba(153, 153, 153, 0.45)" strokeDasharray="2,2" />
+          <G fontSize="13" fill="rgb(155, 155, 155)">
           {
+            // draw tickLabels
             values.map((value, index) => (
               <G key={index}>
-                <Text x={value.x1} y={value.y1}>{value.tick}</Text>
-                <Text x={value.x2} y={value.y1} textAnchor="end">{`${value.percent}%`}</Text>
+                <Text x={value.x2} y={value.y1} textAnchor="end">{value.tick}</Text>
+                <Text x={value.x1} y={value.y1}>{`${value.percent}%`}</Text>
               </G>
             ))
           }
           </G>
-          <G style={{ backgroundColor: '#efefef' }}>
-					{
-            this.volumes.map( (volume, index) => {
+          <G y={defaultStockChartHeight} fill="rgb(155, 155, 155)" fontSize="13">
+					{ // draw volume bars
+            ticks.map( (tick, index) => {
+              const volume = tick.volume;
               const width = this.barWidth;
               const height = this.volumeScale(volume);
               return (
                 <Rect
                   key={index}
                   x={index * width}
-                  y={defaultStockChartHeight + defaultVolumeChartHeight - height}
+                  y={defaultVolumeChartHeight - height}
                   height={height}
                   width={width * 0.7}
-                  fill={Math.random() < 0.5 ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
+                  fill={tick.mark ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
                 />
               );
             })
 					}
+          <Path d={`M0 -${defaultStockChartHeight - defaultVolumeChartHeight} ${defaultWidth} -${defaultStockChartHeight - defaultVolumeChartHeight}`} stroke="rgb(155, 155, 155)" />
+          {
+            this.getTimeTickValues()
+              .map((p, index) =>
+                <G key={index}>
+                  <Text x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start' : 'middle'}>{p.time}</Text>
+                  <Rect x={p.x} y={p.y} fill="rgb(155, 155, 155)" width="1" height="5" />
+                </G>
+              )
+          }
           </G>
-          <Path d={`M0 ${defaultStockChartHeight + defaultVolumeChartHeight} ${defaultWidth} ${defaultVolumeChartHeight + defaultStockChartHeight}`} stroke="rgb(155, 155, 155)" />
-          {
-            this.getTimeTickValues().map((p, index) => <Text key={index} x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start' : 'middle'}>{p.time}</Text>)
-          }
-          {
-            this.getTimeTickValues().map((p, index) =>
-              <Rect key={index} x={p.x} y={p.y} fill="rgb(155, 155, 155)" width="1" height="5" />
-            )
-          }
         </Svg>
       </ScrollView>
     );
