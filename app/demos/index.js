@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import Text from '../components/Text';
@@ -11,6 +11,30 @@ class Demos extends Component {
 
     return (
       <ScrollView style={styles.container}>
+
+        <View style={styles.header}>
+          <Text style={styles.headerText}>use D3Path/D3Shape</Text>
+        </View>
+
+        <TouchableOpacity onPress={() => handlePress('SVGBasic')}>
+          <Text>SVG Basics</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('D3Scale')}>
+          <Text>D3 Scale</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('D3Ticks')}>
+          <Text>D3 Ticks</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('D3Shape')}>
+          <Text>D3 Shape</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('CustomStockChart')}>
+          <Text>Custom Stock Chart</Text>
+        </TouchableOpacity>
+
+        <View style={styles.header}>
+          <Text style={styles.headerText}>use formidable chart</Text>
+        </View>
         <TouchableOpacity onPress={() => handlePress('BasicLineChart')}>
           <Text>Basic Line Chart</Text>
         </TouchableOpacity>
@@ -29,15 +53,6 @@ class Demos extends Component {
         <TouchableOpacity onPress={() => handlePress('StockChartWithVolume')}>
           <Text>Stock Chart with Volume</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('SVGLine')}>
-          <Text>SVG Line</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('D3Scale')}>
-          <Text>D3 Scale</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('CustomStockChart')}>
-          <Text>Custom Stock Chart</Text>
-        </TouchableOpacity>
       </ScrollView>
     );
   }
@@ -52,6 +67,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  header: {
+    backgroundColor: 'rgb(234, 234, 234)',
+    height: 50,
+  },
+  headerText: {
+    justifyContent: 'center'
+  }
 });
 
 const mapDispatchToProps = (dispatch) => {

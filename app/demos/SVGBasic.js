@@ -8,7 +8,7 @@ import * as d3Scale from 'd3-scale';
 
 const deviceWidth = Dimensions.get('window').width;
 
-class SVGLine extends Component {
+class SVGBasic extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SVGLine;
+export default SVGBasic;
