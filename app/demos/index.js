@@ -29,10 +29,15 @@ class Demos extends Component {
         <TouchableOpacity onPress={() => handlePress('StockChartWithVolume')}>
           <Text>Stock Chart with Volume</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('SVGLine')}>
+          <Text>SVG Line</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('D3Scale')}>
+          <Text>D3 Scale</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handlePress('CustomStockChart')}>
           <Text>Custom Stock Chart</Text>
         </TouchableOpacity>
-
       </ScrollView>
     );
   }

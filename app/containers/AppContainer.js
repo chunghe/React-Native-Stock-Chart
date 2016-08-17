@@ -11,6 +11,8 @@ import MultipleAxes from '../demos/MultipleAxes';
 import VolumeChart from '../demos/VolumeChart';
 import StockChartWithVolume from '../demos/StockChartWithVolume';
 import CustomStockChart from '../demos/CustomStockChart';
+import SVGLine from '../demos/SVGLine';
+import D3Scale from '../demos/D3Scale';
 
 const {
   CardStack: NavigationCardStack,
@@ -34,7 +36,9 @@ class AppContainer extends React.Component {
       MultipleAxes,
       VolumeChart,
       StockChartWithVolume,
-      CustomStockChart
+      CustomStockChart,
+      SVGLine,
+      D3Scale
     };
 
     const toRender = componentsMapping[route.key] || null;
