@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Text, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
-import Svg, {Circle, Path } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
-import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -21,7 +20,7 @@ class D3Scale extends Component {
         <Text>scalePrice(8210): {scalePrice(8210)}</Text>
         <Text>scalePrice(8254): {scalePrice(8254)}</Text>
         <Text>scalePrice(8276): {scalePrice(8276)}</Text>
-        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{backgroundColor: '#efefef'}}>
+        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{ backgroundColor: '#efefef' }}>
           <Circle cx="10" cy={scalePrice(8210)} r="5" fill="red" />
           <Circle cx="30" cy={scalePrice(8254)} r="5" fill="red" />
           <Circle cx="50" cy={scalePrice(8276)} r="5" fill="red" />
@@ -29,14 +28,14 @@ class D3Scale extends Component {
         </Svg>
 
         <Text>正確的座標是從左上角開始</Text>
-        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{backgroundColor: '#efefef'}}>
+        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{ backgroundColor: '#efefef' }}>
           <Circle cx="10" cy={scalePriceCorrect(8210)} r="5" fill="red" />
           <Circle cx="30" cy={scalePriceCorrect(8254)} r="5" fill="red" />
           <Circle cx="50" cy={scalePriceCorrect(8276)} r="5" fill="red" />
           <Path d={`M0 ${scalePriceCorrect(8200)} ${deviceWidth} ${scalePriceCorrect(8200)}`} stroke="#666" strokeWidth="2" />
         </Svg>
         <Text>用 Path 畫看看</Text>
-        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{backgroundColor: '#efefef'}}>
+        <Svg width={deviceWidth} height={defaultStockChartHeight} style={{ backgroundColor: '#efefef' }}>
           <Path d={`M10 ${scalePriceCorrect(8210)} 30 ${scalePriceCorrect(8254)} 50 ${scalePriceCorrect(8276)}`} stroke="#666" fill="none" />
           <Path d={`M0 ${scalePriceCorrect(8200)} ${deviceWidth} ${scalePriceCorrect(8200)}`} stroke="#666" strokeWidth="2" />
         </Svg>

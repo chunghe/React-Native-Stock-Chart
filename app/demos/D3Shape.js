@@ -12,7 +12,6 @@ const defaultStockChartHeight = 200;
 
 class D3Shape extends Component {
   render() {
-
     const { ticks, lowestPrice, highestPrice, tradingHours } = data;
     const timeScale =
       d3Scale
@@ -24,8 +23,17 @@ class D3Shape extends Component {
         .scaleLinear()
         .domain([lowestPrice, highestPrice])
         .range([0, defaultStockChartHeight].reverse());
-    const lineFunction = d3Shape.line().x(d => timeScale(d.time * 1000)).y(d => priceScale(d.price));
-    const areaFunction = d3Shape.area().x(d => timeScale(d.time * 1000)).y(d => priceScale(d.price)).y1(() => priceScale(lowestPrice));
+    const lineFunction =
+      d3Shape
+        .line()
+        .x(d => timeScale(d.time * 1000))
+        .y(d => priceScale(d.price));
+    const areaFunction =
+      d3Shape
+        .area()
+        .x(d => timeScale(d.time * 1000))
+        .y(d => priceScale(d.price))
+        .y1(() => priceScale(lowestPrice));
 
     return (
       <ScrollView style={styles.container}>
@@ -37,7 +45,7 @@ class D3Shape extends Component {
         <Text>timeScale: domain([開盤時間, 收盤時間]) range([0, chartWidth])</Text>
         <Text>priceScale: domain([最低價, 最高價]) range([0, chartHeight].reverse())</Text>
         <Text>利用 d3Shape.line() 產生 path 的點: lineFunction = D3Shape.line().x(d => timeScale(d.time)).y(d => priceScale(d.price))</Text>
-        <Text>{`lineFunction(ticks), 其中 ticks: [{time: .., price: ...}]`}</Text>
+        <Text>lineFunction(ticks), 其中 ticks: [{'{'}time: .., price: ...{'}'}]</Text>
         <Svg height={defaultStockChartHeight} width={deviceWidth}>
           <Path d={lineFunction(ticks)} stroke="rgb(0, 102, 221, 0.75)" fill="none" />
         </Svg>

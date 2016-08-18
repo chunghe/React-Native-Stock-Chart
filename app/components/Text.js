@@ -12,7 +12,6 @@ class T extends Component {
 }
 
 T.propTypes = {
-  children: PropTypes.string.isRequired,
   heading: PropTypes.bool
 };
 

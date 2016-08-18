@@ -125,33 +125,36 @@ class CustomStockChart extends Component {
           }
           </G>
           <G y={defaultStockChartHeight} fill="rgb(155, 155, 155)" fontSize="13">
-					{ // draw volume bars
-            ticks.map( (tick, index) => {
-              const volume = tick.volume;
-              const width = this.barWidth;
-              const height = this.volumeScale(volume);
-              return (
-                <Rect
-                  key={index}
-                  x={index * width}
-                  y={defaultVolumeChartHeight - height}
-                  height={height}
-                  width={width * 0.7}
-                  fill={tick.mark ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
-                />
-              );
-            })
-					}
-          <Path d={`M0 -${defaultStockChartHeight - defaultVolumeChartHeight} ${defaultWidth} -${defaultStockChartHeight - defaultVolumeChartHeight}`} stroke="rgb(155, 155, 155)" />
-          {
-            this.getTimeTickValues()
-              .map((p, index) =>
-                <G key={index}>
-                  <Text x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start' : 'middle'}>{p.time}</Text>
-                  <Rect x={p.x} y={p.y} fill="rgb(155, 155, 155)" width="1" height="5" />
-                </G>
-              )
-          }
+            { // draw volume bars
+              ticks.map( (tick, index) => {
+                const volume = tick.volume;
+                const width = this.barWidth;
+                const height = this.volumeScale(volume);
+                return (
+                  <Rect
+                    key={index}
+                    x={index * width}
+                    y={defaultVolumeChartHeight - height}
+                    height={height}
+                    width={width * 0.7}
+                    fill={tick.mark ? 'rgb(222, 88, 73)' : 'rgb(80, 199, 101)'}
+                  />
+                );
+              })
+            }
+            <Path
+              d={`M0 -${defaultStockChartHeight - defaultVolumeChartHeight} ${defaultWidth} -${defaultStockChartHeight - defaultVolumeChartHeight}`}
+              stroke="rgb(155, 155, 155)"
+            />
+            {
+              this.getTimeTickValues()
+                .map((p, index) =>
+                  <G key={index}>
+                    <Text x={p.x} y={p.y + 5} textAnchor={index === 0 ? 'start' : 'middle'}>{p.time}</Text>
+                    <Rect x={p.x} y={p.y} fill="rgb(155, 155, 155)" width="1" height="5" />
+                  </G>
+                )
+            }
           </G>
         </Svg>
       </ScrollView>
