@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Dimensions } from 'react-native';
 import Svg, { Rect, G,  Path, Text } from 'react-native-svg';
-import data from '../data';
 
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 import * as d3TimeFormat from 'd3-time-format';
+
+import data from '../data';
 
 const defaultWidth = Dimensions.get('window').width;
 const defaultStockChartHeight = 200;

@@ -17,6 +17,7 @@ class D3Scale extends Component {
       <ScrollView style={styles.container}>
         <Text>Domain(定義域)/Range(值域)</Text>
         <Text>假設 x 軸為時間, y 軸為股價, 當日股價最低8200, 最高 8300, 要把股價 8210, 8254, 8276 畫在高 200 的圖上</Text>
+        <Text>domain: [8200, 8300], range: [0, 200]</Text>
         <Text>scalePrice(8210): {scalePrice(8210)}</Text>
         <Text>scalePrice(8254): {scalePrice(8254)}</Text>
         <Text>scalePrice(8276): {scalePrice(8276)}</Text>
@@ -48,7 +49,7 @@ class D3Scale extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
 });
 
