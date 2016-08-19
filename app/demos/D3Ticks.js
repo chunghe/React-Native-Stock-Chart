@@ -75,7 +75,10 @@ class D3Ticks extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <T heading>D3 Ticks</T>
+        <T heading>Draw the grid line</T>
+        <T>Challenge</T>
+        <T> 1. ticks should be beatuiful number (multiply by 2, 5, 10)</T>
+        <T>the interval of grid line should be equally distributed</T>
         <T>Returns an array of approximately count + 1 uniformly-spaced, nicely-rounded values between start and stop (inclusive). Each value is a power of ten multiplied by 1, 2 or 5. See also tickStep and linear.ticks.</T>
         <T>Ticks are inclusive in the sense that they may include the specified start and stop values if (and only if) they are exact, nicely-rounded values consistent with the inferred step. More formally, each returned tick t satisfies start ≤ t and t ≤ stop.</T>
 
@@ -131,7 +134,6 @@ class D3Ticks extends Component {
           <Path d={lineFunction(ticks)} stroke="rgb(0, 102, 221, 0.75)" fill="none" />
           {
             adjustPriceTicks.map(t => {
-              console.log('t', t);
               return (
                 <G key={t}>
                   <Text
@@ -148,25 +150,27 @@ class D3Ticks extends Component {
                 );
             })
           }
+          <G y={defaultStockChartHeight} fill="red">
           {
             timeTicks.map(t => {
               return (
-                <G>
+                <G key={t}>
                   <Text
                     key={t}
                     x={timeScale(t)}
-                    y={defaultStockChartHeight}
+                    y={0}
                     textAnchor="middle"
                     fill="#999"
                   >
                     {`${this.formatTime(t)}`}
                   </Text>
-                  <Rect x={timeScale(t)} y={defaultStockChartHeight} width="1" height="5" fill="#999" />
+                  <Rect x={timeScale(t)} y={0} width="1" height="5" fill="#999" />
                 </G>
                 );
             })
 
           }
+          </G>
         </Svg>
       </ScrollView>
     );

@@ -1,24 +1,39 @@
 import React, { Component, PropTypes } from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 class T extends Component {
   render() {
     const { heading } = this.props;
-    const style = heading ? styles.heading : styles.text;
+    if (heading) {
+      return (
+        <View style={styles.heading}>
+          <Text style={styles.headingText}>{this.props.children}</Text>
+        </View>
+      );
+    }
     return (
-      <Text style={style}>{this.props.children}</Text>
+      <Text style={styles.text}>{this.props.children}</Text>
     );
   }
 }
 
 T.propTypes = {
-  heading: PropTypes.bool
+  heading: PropTypes.bool,
+  children: PropTypes.string
 };
 
 const styles = StyleSheet.create({
   heading: {
-    padding: 20,
-    fontSize: 24
+    paddingBottom: 10,
+    borderStyle: 'solid',
+    borderColor: '#ddd',
+    borderBottomWidth: 1,
+    marginTop: 20,
+    marginHorizontal: 15,
+    marginBottom: 10
+  },
+  headingText: {
+    fontSize: 24,
   },
   text: {
     padding: 20,
