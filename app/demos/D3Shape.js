@@ -31,6 +31,7 @@ class D3Shape extends Component {
         .line()
         .x(d => timeScale(d.time * 1000))
         .y(d => priceScale(d.price));
+
     const areaFunction =
       d3Shape
         .area()
@@ -40,12 +41,26 @@ class D3Shape extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <T heading>D3 Shape</T>
-        <T>手動繪製只能處理簡單的圖, 如果需要畫複雜一點的圖會需要 D3Shape</T>
-        <T>Arcs/Pie/Lines/Areas/Curves/Stacks, etc</T>
-        <T>現在只需要 Lines/Areas</T>
-        <T>先準備好兩個 scale function: timeScale/priceScale</T>
-        <T>timeScale</T>
+        <T>- To draw more complicated chart, you will need d3Shape</T>
+        <T>- Arcs/Pie/Lines/Areas/Curves/Stacks, etc</T>
+        <T>Example:</T>
+        <Code>
+				{`
+	import * as d3Shape from 'd3-shape';
+
+	var arc = d3Shape.arc()
+			.innerRadius(0)
+			.outerRadius(100)
+			.startAngle(0)
+			.endAngle(Math.PI / 2);
+
+	arc();
+	// "M0,-100A100,100,0,0,1,100,0L0,0Z"
+				`}
+        </Code>
+        <T>- For stock chart, only needed D3Shape.line()/D3Shape.area() function</T>
+        <T>- preparing two scale functions: timeScale/priceScale</T>
+        <T>timeScale:</T>
         <Code>
           {`
   const timeScale =
@@ -65,7 +80,7 @@ class D3Shape extends Component {
       .range([0, defaultStockChartHeight].reverse());
         `}
         </Code>
-        <T>利用 d3Shape.line() 產生 path 的點</T>
+        <T>define a line generator for a time series by scaling fields of your data to fit the chart</T>
         <Code>
           {`
   const lineFunction =
@@ -73,9 +88,12 @@ class D3Shape extends Component {
       .line()
       .x(d => timeScale(d.time * 1000))
       .y(d => priceScale(d.price));
+
+  // ticks: array of {time: ..., price: ...}
+  lineFunction(ticks);
+  // M0,44.98527968596417L1.2685281997662834,117.52698724239188L2.652377144965865,153.13052011775952L4.036226090165447,166.7124631992159L5.420075035365028,173.54268891069705L6.80392398056461,182.72816486751822L8.187772925764191,...
         `}
         </Code>
-        <T>lineFunction(ticks), 其中 ticks: [{'{'}time: .., price: ...{'}'}]</T>
         <Svg height={defaultStockChartHeight} width={deviceWidth}>
           <Path d={lineFunction(ticks)} stroke="rgb(0, 102, 221, 0.75)" fill="none" />
         </Svg>
@@ -86,7 +104,7 @@ class D3Shape extends Component {
   </Svg>
         `}
         </Code>
-        <T>利用 d3Shape.area() 產生 area 的點</T>
+        <T>define a area generator for a time series by scaling fields of your data to fit the chart</T>
         <Code>
         {`
   const areaFunction =
