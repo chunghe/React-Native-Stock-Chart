@@ -16,7 +16,7 @@ class Demos extends Component {
         </View>
 
         <TouchableOpacity style={styles.row} onPress={() => handlePress('SVGBasic')}>
-          <Text>react-native-svg</Text>
+          <Text>SVG Basics</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Scale')}>
           <Text>D3 Scale</Text>
