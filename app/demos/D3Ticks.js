@@ -81,6 +81,7 @@ class D3Ticks extends Component {
         <T>2. the interval of grid line should be equally distributed</T>
 
         <Image source={{ uri: 'https://raw.githubusercontent.com/chunghe/React-Native-Stock-Chart/master/app/assets/chart.png' }} style={{ width: null, height: 300 }} resizeMode="contain" />
+        <Image source={{ uri: 'https://raw.githubusercontent.com/chunghe/React-Native-Stock-Chart/9aacbbfecd2ce89999a3b246f6f4608e93a66bd9/app/assets/better.png' }} style={{ width: null, height: 300 }} resizeMode="contain" />
 
         <T heading>d3Array.ticks(start, end, count)</T>
         <T>Returns an array of approximately count + 1 uniformly-spaced, nicely-rounded values between start and stop (inclusive). Each value is a power of ten multiplied by 1, 2 or 5. See also tickStep and linear.ticks.</T>
