@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import AppContainer from './containers/AppContainer';
 import configureStore from './store/configureStore';
-
+console.disableYellowBox = true;
 const store = configureStore();
 
 export default class App extends Component {
