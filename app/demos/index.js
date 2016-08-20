@@ -15,19 +15,19 @@ class Demos extends Component {
           <Text style={styles.headerText}>use D3Path/D3Shape</Text>
         </View>
 
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('SVGBasic')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('SVGBasic', 'SVG Basics')}>
           <Text>SVG Basics</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Scale')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Scale', 'D3Scale')}>
           <Text>D3 Scale</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Shape')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Shape', 'D3 Shape')}>
           <Text>D3 Shape</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Ticks')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('D3Ticks', 'Draw the grid line')}>
           <Text>Draw the grid line</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('CustomStockChart')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('CustomStockChart', 'Custom Stock Chart')}>
           <Text>Custom Stock Chart</Text>
         </TouchableOpacity>
 
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handlePress: (key) => {
-      dispatch(navigatePush({ key }));
+    handlePress: (key, title) => {
+      dispatch(navigatePush({ key, title }));
     }
   };
 };

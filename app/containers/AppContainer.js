@@ -56,6 +56,7 @@ class AppContainer extends React.Component {
 
   _renderHeader(sceneProps) {
     const { handleNavigateBack } = this.props;
+    const title = sceneProps.scene.route.title || 'Stock Chart';
     return (
       <NavigationHeader
         {...sceneProps}
@@ -63,7 +64,7 @@ class AppContainer extends React.Component {
         onNavigateBack={handleNavigateBack}
         renderTitleComponent={props => {
           // const route = props.scene.route;
-          return <NavigationHeader.Title>Stock Chart</NavigationHeader.Title>;
+          return <NavigationHeader.Title>{title}</NavigationHeader.Title>;
         }}
       />
     );
