@@ -8,7 +8,7 @@ import {
 import Svg  from 'react-native-svg';
 
 import Loading from '../components/Loading';
-import Text from '../components/Text';
+import T from '../components/T';
 import data from '../data';
 import * as util from '../util';
 
@@ -34,10 +34,10 @@ class MultipleAxes extends Component {
     }
     return (
       <ScrollView style={styles.container}>
-        <Text heading>Line chart with multiple Axes</Text>
-        <Text>let's add another y-axis to display percentage change, if you try to put more than one y-axis in a VictoryChart , it will cause an error, you have to wrap two y-axis in a Svg element from 'react-native-svg' and calculate the domain manually</Text>
-        <Text>make sure you set standalone: false or it will crash</Text>
-        <Text>let's begin with the very basic chart with 2 y-axes</Text>
+        <T heading>Line chart with multiple Axes</T>
+        <T>let's add another y-axis to display percentage change, if you try to put more than one y-axis in a VictoryChart , it will cause an error, you have to wrap two y-axis in a Svg element from 'react-native-svg' and calculate the domain manually</T>
+        <T>make sure you set standalone: false or it will crash</T>
+        <T>let's begin with the very basic chart with 2 y-axes</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -53,7 +53,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>Let's draw the price line here</Text>
+        <T>Let's draw the price line here</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -75,7 +75,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>again, we have to set correct domain/scale for VictoryAxis/VictoryLine</Text>
+        <T>again, we have to set correct domain/scale for VictoryAxis/VictoryLine</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -104,7 +104,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>tweak the tickFormat of the right y-axis to display percentage</Text>
+        <T>tweak the tickFormat of the right y-axis to display percentage</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -134,7 +134,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>add previous close line/grid line back</Text>
+        <T>add previous close line/grid line back</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}
@@ -196,7 +196,7 @@ class MultipleAxes extends Component {
           />
         </Svg>
 
-        <Text>use AxisArea</Text>
+        <T>use AxisArea</T>
         <Svg height={defaultHeight} width={defaultWidth}>
           <VictoryAxis
             standalone={false}

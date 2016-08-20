@@ -5,7 +5,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 
 import * as d3Scale from 'd3-scale';
 
-import T from '../components/Text';
+import T from '../components/T';
 import Code from '../components/Code';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -20,9 +20,9 @@ class D3Scale extends Component {
         <T heading>Domain(定義域)/Range(值域)</T>
         <T>假設 x 軸為時間, y 軸為股價, 當日股價最低8200, 最高 8300, 要把股價 8210, 8254, 8276 畫在高 200 的圖上</T>
         <T>domain: [8200, 8300], range: [0, 200]</T>
-        <T>scalePrice(8210): {scalePrice(8210)}</T>
-        <T>scalePrice(8254): {scalePrice(8254)}</T>
-        <T>scalePrice(8276): {scalePrice(8276)}</T>
+        <T>{`scalePrice(8210): ${scalePrice(8210)}`}</T>
+        <T>{`scalePrice(8254): ${scalePrice(8254)}`}</T>
+        <T>{`scalePrice(8276): ${scalePrice(8276)}`}</T>
         <Code>
           {`
   import * as D3Scale from 'd3-scale';

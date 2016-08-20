@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 class T extends Component {
   render() {
-    const { heading } = this.props;
+    const { heading, children } = this.props;
     if (heading) {
       return (
         <View style={styles.heading}>
@@ -12,7 +12,7 @@ class T extends Component {
       );
     }
     return (
-      <Text style={styles.text}>{this.props.children}</Text>
+      <Text style={styles.text}>{children}</Text>
     );
   }
 }

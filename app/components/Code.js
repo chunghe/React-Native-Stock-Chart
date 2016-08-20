@@ -3,8 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 
 class Code extends Component {
   render() {
+    const { style } = this.props;
     return (
-      <View style={styles.code}>
+      <View style={[styles.code, style]}>
         <Text style={styles.codeText}>{this.props.children}</Text>
       </View>
     );
@@ -12,7 +13,8 @@ class Code extends Component {
 }
 
 Code.propTypes = {
-  children: PropTypes.string.isRequired
+  children: PropTypes.string.isRequired,
+  style: PropTypes.object
 };
 
 const styles = StyleSheet.create({

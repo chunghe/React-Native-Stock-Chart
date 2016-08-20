@@ -6,7 +6,7 @@ import {
 } from 'victory-chart-native';
 import Svg from 'react-native-svg';
 
-import Text from '../components/Text';
+import T from '../components/T';
 import Loading from '../components/Loading';
 import data from '../data';
 
@@ -36,8 +36,8 @@ class VolumeChart extends Component {
     return (
       <ScrollView style={styles.container}>
         <View style={{ paddingBottom: 50 }}>
-          <Text heading>Volume chart</Text>
-          <Text>basic volume chart using VictoryBar</Text>
+          <T heading>Volume chart</T>
+          <T>basic volume chart using VictoryBar</T>
           <VictoryBar
             height={200}
             data={ticks}
@@ -45,7 +45,7 @@ class VolumeChart extends Component {
             y={'volume'}
           />
 
-          <Text>add some color</Text>
+          <T>add some color</T>
           <VictoryBar
             height={200}
             data={ticks}
@@ -59,7 +59,7 @@ class VolumeChart extends Component {
             }}
           />
 
-          <Text>Add axis, set proper domain</Text>
+          <T>Add axis, set proper domain</T>
           <Svg height={defaultHeight} width={defaultWidth}>
             <VictoryAxis
               standalone={false}
@@ -89,7 +89,7 @@ class VolumeChart extends Component {
             />
           </Svg>
 
-          <Text>remove the default padding to make the volume chart more compact and display fewer tickCount</Text>
+          <T>remove the default padding to make the volume chart more compact and display fewer tickCount</T>
           <Svg height={100} width={defaultWidth}>
             <VictoryAxis
               height={100}

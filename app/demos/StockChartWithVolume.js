@@ -14,7 +14,7 @@ import {
 } from 'victory-chart-native';
 import Svg from 'react-native-svg';
 
-import Text from '../components/Text';
+import T from '../components/T';
 import Loading from '../components/Loading';
 import data from '../data';
 import * as util from '../util';
@@ -46,9 +46,9 @@ class StockChartWithVolume extends Component {
     return (
       <ScrollView style={styles.container}>
         <View style={{ paddingBottom: 50 }}>
-          <Text heading>Combine Stock Chart with Volume Chart</Text>
+          <T heading>Combine Stock Chart with Volume Chart</T>
 
-          <Text>put two charts together</Text>
+          <T>put two charts together</T>
           <Svg height={defaultHeight} width={defaultWidth}>
             <VictoryAxis
               dependentAxis

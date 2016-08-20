@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
-import T from '../components/Text';
+import T from '../components/T';
 import Svg, { Rect, G, Path, Text } from 'react-native-svg';
 
 import data from '../data';

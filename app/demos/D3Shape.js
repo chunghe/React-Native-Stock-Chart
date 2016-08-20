@@ -7,7 +7,7 @@ import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
 import data from '../data';
-import T from '../components/Text';
+import T from '../components/T';
 import Code from '../components/Code';
 
 const deviceWidth = Dimensions.get('window').width;

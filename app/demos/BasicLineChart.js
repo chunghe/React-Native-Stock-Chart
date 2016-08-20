@@ -4,7 +4,7 @@ import {
   VictoryLine,
 } from 'victory-chart-native';
 
-import T from '../components/Text';
+import T from '../components/T';
 import data from '../data';
 
 class BasicLineChart extends Component {
