@@ -59,17 +59,25 @@ class SVGBasic extends Component {
 
         <T heading>Examples</T>
         <T>SVG element with 100 width 100 height</T>
-        <Svg height={100} width={100} style={{ backgroundColor: 'lime' }} />
+        <Svg height="100" width="100" style={{ backgroundColor: 'lime' }} />
         <Code>
         {`
-  <Svg height={100} width={100} style={{ backgroundColor: 'lime'}} />
+  <Svg
+    height="100"
+    width="100"
+    style={{ backgroundColor: 'lime'}}
+  />
         `}
         </Code>
         <T>SVG element with width equals to device width</T>
-        <Svg height={100} width={Dimensions.get('window').width} style={{ backgroundColor: 'lime' }} />
+        <Svg height="100" width={Dimensions.get('window').width} style={{ backgroundColor: 'lime' }} />
         <Code>
         {`
-  <Svg height={100} width={Dimensions.get('window').width} style={{ backgroundColor: 'lime' }} />
+  <Svg
+    height="100"
+    width={Dimensions.get('window').width}
+    style={{ backgroundColor: 'lime' }}
+  />
         `}
         </Code>
         <T>Draw complicated logo with react-native-svg (Circle, Path, Polygon)</T>
