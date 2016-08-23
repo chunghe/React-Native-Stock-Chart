@@ -8,6 +8,7 @@ import * as d3Scale from 'd3-scale';
 import T from '../components/T';
 
 const deviceWidth = Dimensions.get('window').width;
+const barMargin = 1; // 1 on each side
 const defaultStockChartHeight = 200;
 const barWidth = 5;
 
@@ -30,7 +31,7 @@ class CandleStick extends Component {
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
-        this.setState({ data, current: 0 });
+        this.setState({ data, current: -1 });
       });
   }
 
@@ -40,6 +41,7 @@ class CandleStick extends Component {
 
   getItemByIndex = (i) => {
     const { c, h, l, o, t, v, s } = this.state.data;
+    const { current } = this.state;
     return {
       c: c[i],
       h: h[i],
@@ -48,25 +50,23 @@ class CandleStick extends Component {
       t: new Date(t[i] * 1000),
       v: v[i],
       s,
-      color: o[i] <= c[i] ? 'red' : 'green'
+      color: (current === i ? '#000': (o[i] <= c[i] ? 'red' : 'green'))
     };
   }
 
   handlePress = (e) => {
     const { locationX, locationY } = e.nativeEvent;
-    console.log({locationX, locationY});
-    //console.log('->', (locationX - 2) / (barWidth + 2))
-    // const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
 
-    // const { c, h, l, o, t, s } = this.state.data;
-    // const highestPrice = Math.max(...h);
-    // const lowestPrice = Math.min(...l);
-    // const reversePriceScale = this.getLinearScale([0, defaultStockChartHeight].reverse(), [lowestPrice, highestPrice]);
+    // console.log({locationX, locationY});
+    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
+    console.log('set current', current);
+    this.setCurrentItem(current)
   }
 
   setCurrentItem = (i) => {
-    console.log('setCurrentItem', i);
-    this.setState({ current: i });
+    if (i <= this.state.data.o.length - 1) {
+      this.setState({ current: i });
+    }
   }
 
   toggleGridline = () => {
@@ -77,12 +77,9 @@ class CandleStick extends Component {
   render() {
     const { current } = this.state;
     const { c, h, l, o, t, s } = this.state.data;
-    console.log('s', s);
     if (s === undefined) {
       return null;
     }
-    console.log('current', current);
-    console.log('state', this.state);
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
@@ -108,7 +105,10 @@ class CandleStick extends Component {
             t.map((_, i) => {
               const { o, c, h, l, color } = this.getItemByIndex(i);
               const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
-              const x = deviceWidth - i * (barWidth + 2) - barWidth - 2;
+              // deviceWidth divided columns each has (barWidth + 2) width
+              // leave 1 as the padding on each side
+              // const x = deviceWidth - i * (barWidth + 2) - barWidth;
+              const x = deviceWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
               const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
               return (
                 <G
@@ -117,7 +117,7 @@ class CandleStick extends Component {
                   <Rect
                     x={x}
                     y={Math.min(scaleO, scaleC)}
-                    fill={color}
+                    fill={current === i ? 'blue': color}
                     height={barHeight}
                     width={barWidth}
                   />
