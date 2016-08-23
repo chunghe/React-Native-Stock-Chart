@@ -52,6 +52,18 @@ class CandleStick extends Component {
     };
   }
 
+  handlePress = (e) => {
+    const { locationX, locationY } = e.nativeEvent;
+    console.log({locationX, locationY});
+    //console.log('->', (locationX - 2) / (barWidth + 2))
+    // const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
+
+    // const { c, h, l, o, t, s } = this.state.data;
+    // const highestPrice = Math.max(...h);
+    // const lowestPrice = Math.min(...l);
+    // const reversePriceScale = this.getLinearScale([0, defaultStockChartHeight].reverse(), [lowestPrice, highestPrice]);
+  }
+
   setCurrentItem = (i) => {
     console.log('setCurrentItem', i);
     this.setState({ current: i });
@@ -86,50 +98,54 @@ class CandleStick extends Component {
           <Text style={{ flex: 1 }}>{`開盤: ${o[current]}`}</Text>
           <Text style={{ flex: 1 }}>{`收盤: ${c[current]}`}</Text>
         </View>
-        <Svg height={defaultStockChartHeight} width={deviceWidth} style={{ backgroundColor: '#efefef' }}>
-				{
-					t.map((_, i) => {
-            const { o, c, h, l, color } = this.getItemByIndex(i);
-            const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
-            const x = deviceWidth - i * (barWidth + 2) - barWidth - 2;
-            const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
-            return (
-              <G
-                key={i}
-                onPress={() => { this.setCurrentItem(i); }}
-              >
-								<Rect
-                  x={x}
-                  y={Math.min(scaleO, scaleC)}
-                  fill={color}
-                  height={barHeight}
-                  width={barWidth}
-								/>
-								<Path stroke={color} d={`M${x + barWidth / 2} ${yTop} L${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
-							</G>
-						);
-					}, this)
-				}
-        {
-          this.state.showGridline &&
-					priceScale.ticks(10).map((p, i) => {
-            return (
-							<G key={i}>
-								<SvgText
-                  fill="#999"
-                  textAnchor="end"
-                  x={deviceWidth - 5}
-                  y={priceScale(p) - 6}
-                  fontSize="10"
-								>
-									{`${p}`}
-								</SvgText>
-								<Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
-							</G>
-						);
-					})
-        }
-
+        <Svg
+          height={defaultStockChartHeight}
+          width={deviceWidth}
+        >
+        <G onPress={this.handlePress}>
+          <Rect x="0" y="0" height={defaultStockChartHeight} width={deviceWidth} fill="#efefef" />
+          {
+            t.map((_, i) => {
+              const { o, c, h, l, color } = this.getItemByIndex(i);
+              const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
+              const x = deviceWidth - i * (barWidth + 2) - barWidth - 2;
+              const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
+              return (
+                <G
+                  key={i}
+                >
+                  <Rect
+                    x={x}
+                    y={Math.min(scaleO, scaleC)}
+                    fill={color}
+                    height={barHeight}
+                    width={barWidth}
+                  />
+                  <Path stroke={color} d={`M${x + barWidth / 2} ${yTop} L${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
+                </G>
+              );
+            }, this)
+          }
+          {
+            this.state.showGridline &&
+            priceScale.ticks(10).map((p, i) => {
+              return (
+                <G key={i}>
+                  <SvgText
+                    fill="#999"
+                    textAnchor="end"
+                    x={deviceWidth - 5}
+                    y={priceScale(p) - 6}
+                    fontSize="10"
+                  >
+                    {`${p}`}
+                  </SvgText>
+                  <Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                </G>
+              );
+            })
+          }
+          </G>
         </Svg>
         <View style={{ padding: 15 }}>
           <TouchableOpacity style={styles.button} onPress={this.toggleGridline}>
