@@ -24,12 +24,12 @@
     "react-native": "0.30.0",
     "react-native-html-render": "^1.0.4",
     "react-native-scrollable-tab-view": "^0.5.3",
-    "react-native-svg": "^3.0.0",
+    "react-native-svg": "^4.1.3",
     "react-redux": "^4.4.0",
     "redux": "^3.3.1",
     "redux-api-middleware": "chunghe/RN-redux-api-middleware#master",
     "redux-thunk": "^2.0.1",
-    "victory-chart-native": "github:chunghe/victory-chart-native#master"
+    "victory-chart-native": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.0",
