@@ -40,7 +40,16 @@ class CandleStick extends Component {
 
   getItemByIndex = (i) => {
     const { c, h, l, o, t, v, s } = this.state.data;
-    return { c: c[i], h: h[i], l: l[i], o: o[i], t: new Date(t[i] * 1000), v: v[i], s };
+    return {
+      c: c[i],
+      h: h[i],
+      l: l[i],
+      o: o[i],
+      t: new Date(t[i] * 1000),
+      v: v[i],
+      s,
+      color: o[i] <= c[i] ? 'red' : 'green'
+    };
   }
 
   setCurrentItem = (i) => {
@@ -66,6 +75,7 @@ class CandleStick extends Component {
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
 
+
     return (
       <ScrollView style={styles.container}>
         <T heading>CandleStick chart</T>
@@ -79,15 +89,10 @@ class CandleStick extends Component {
         <Svg height={defaultStockChartHeight} width={deviceWidth} style={{ backgroundColor: '#efefef' }}>
 				{
 					t.map((_, i) => {
-            const open = o[i];
-            const close = c[i];
-            const highest = h[i];
-            const lowest = l[i];
-            const yTop = priceScale(highest);
-            const yBottom = priceScale(lowest);
-            const color = o[i] <= c[i] ? 'red' : 'green';
-            const x = deviceWidth - i * barWidth - barWidth - 2;
-            const barHeight = Math.abs(priceScale(open) - priceScale(close));
+            const { o, c, h, l, color } = this.getItemByIndex(i);
+            const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
+            const x = deviceWidth - i * (barWidth + 2) - barWidth - 2;
+            const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
             return (
               <G
                 key={i}
@@ -95,15 +100,15 @@ class CandleStick extends Component {
               >
 								<Rect
                   x={x}
-                  y={priceScale(Math.max(open, close))}
+                  y={Math.min(scaleO, scaleC)}
                   fill={color}
-                  height={Math.max(barHeight, 1)}
+                  height={barHeight}
                   width={barWidth}
 								/>
 								<Path stroke={color} d={`M${x + barWidth / 2} ${yTop} L${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
 							</G>
 						);
-					})
+					}, this)
 				}
         {
           this.state.showGridline &&
