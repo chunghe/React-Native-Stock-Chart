@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
-import { Dimensions,  ScrollView, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
-import Svg, { G, Text, Rect, Path } from 'react-native-svg';
+import Svg, { G, Text as SvgText, Rect, Path } from 'react-native-svg';
 
-import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
 
-import data from '../data';
 import T from '../components/T';
-import Code from '../components/Code';
 
 const deviceWidth = Dimensions.get('window').width;
 const defaultStockChartHeight = 200;
-const bottomAxisHeight = 20;
-const barWidth = 6;
+const barWidth = 5;
 
 
 class CandleStick extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      data: {},
+      showGridline: false
     };
+  }
+
+  componentDidMount() {
+    this.getStockQuotes();
   }
 
   getStockQuotes = () => {
@@ -29,86 +30,107 @@ class CandleStick extends Component {
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
-        this.setState({data: data});
+        this.setState({ data, current: 0 });
       });
-  }
-
-  componentDidMount() {
-    this.getStockQuotes();
   }
 
   getLinearScale(domain, range, isTime = false) {
     return (isTime ? d3Scale.scaleTime() : d3Scale.scaleLinear()).domain(domain).range(range);
   }
 
-	getItemByIndex = (i) => {
-    const {c, h, l, o, t, v, s} = this.state.data;
-		return {c: c[i], h: h[i], l: l[i], o: o[i], t: new Date(t[i] * 1000), v: v[i]};
-	}
+  getItemByIndex = (i) => {
+    const { c, h, l, o, t, v, s } = this.state.data;
+    return { c: c[i], h: h[i], l: l[i], o: o[i], t: new Date(t[i] * 1000), v: v[i], s };
+  }
+
+  setCurrentItem = (i) => {
+    console.log('setCurrentItem', i);
+    this.setState({ current: i });
+  }
+
+  toggleGridline = () => {
+    this.setState({ showGridline: !this.state.showGridline });
+  }
+
 
   render() {
-    const {c, h, l, o, t, v, s} = this.state.data;
+    const { current } = this.state;
+    const { c, h, l, o, t, s } = this.state.data;
     console.log('s', s);
     if (s === undefined) {
       return null;
     }
+    console.log('current', current);
     console.log('state', this.state);
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
-    console.log('[lowestPrice, highestPrice]', [lowestPrice, highestPrice])
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
 
     return (
       <ScrollView style={styles.container}>
         <T heading>CandleStick chart</T>
-        <Svg height={defaultStockChartHeight} width={deviceWidth} style={{backgroundColor: '#efefef'}}>
+        <Text>{`時間: ${new Date(t[current] * 1000)}`}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={{ flex: 1 }}>{`最高: ${h[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`最低: ${l[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`開盤: ${o[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`收盤: ${c[current]}`}</Text>
+        </View>
+        <Svg height={defaultStockChartHeight} width={deviceWidth} style={{ backgroundColor: '#efefef' }}>
 				{
 					t.map((_, i) => {
-						const open = o[i];
-						const close = c[i];
-						const highest = h[i];
-						const lowest = l[i];
-						const yTop = priceScale(highest);
-						const yBottom = priceScale(lowest);
-						const color = o[i] <= c[i] ? 'red' : 'green';
-						const x = deviceWidth - i * barWidth - barWidth / 2 - 50;
-						const barHeight = Math.abs(priceScale(open) - priceScale(close));
-						// console.log('yTop - yBottom', yTop - yBottom);
-						return (
-							<G key={i} onPressIn={() => {console.log('press in')}}>
+            const open = o[i];
+            const close = c[i];
+            const highest = h[i];
+            const lowest = l[i];
+            const yTop = priceScale(highest);
+            const yBottom = priceScale(lowest);
+            const color = o[i] <= c[i] ? 'red' : 'green';
+            const x = deviceWidth - i * barWidth - barWidth - 2;
+            const barHeight = Math.abs(priceScale(open) - priceScale(close));
+            return (
+              <G
+                key={i}
+                onPress={() => { this.setCurrentItem(i); }}
+              >
 								<Rect
-									x={x}
-									y={yTop}
-									fill={color}
-									height={barHeight}
-									width={barWidth}
-									onPressIn={() => {console.log(this.getItemByIndex(i))}}
+                  x={x}
+                  y={priceScale(Math.max(open, close))}
+                  fill={color}
+                  height={Math.max(barHeight, 1)}
+                  width={barWidth}
 								/>
-								<Path fill="#000" d={`M ${x + barWidth/2} ${yTop} ${x + barWidth/2} ${yBottom}` } strokeWidth="1" />
+								<Path stroke={color} d={`M${x + barWidth / 2} ${yTop} L${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
 							</G>
 						);
 					})
 				}
-				{
+        {
+          this.state.showGridline &&
 					priceScale.ticks(10).map((p, i) => {
-						return (
+            return (
 							<G key={i}>
-								<Text
-									fill="#999"
-									textAnchor="end"
-									x={deviceWidth - 5}
-									y={priceScale(p) - 6}
-									fontSize="10"
+								<SvgText
+                  fill="#999"
+                  textAnchor="end"
+                  x={deviceWidth - 5}
+                  y={priceScale(p) - 6}
+                  fontSize="10"
 								>
 									{`${p}`}
-								</Text>
-								<Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd"  />
+								</SvgText>
+								<Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
 							</G>
-						)
+						);
 					})
-				}
+        }
 
         </Svg>
+        <View style={{ padding: 15 }}>
+          <TouchableOpacity style={styles.button} onPress={this.toggleGridline}>
+            <Text>toggle grid line</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     );
   }
@@ -119,6 +141,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
+  button: {
+    borderWidth: 1,
+    borderColor: '#666',
+    borderStyle: 'solid',
+    position: 'absolute', // not occupying full width
+    padding: 10,
+  }
 });
 
 export default CandleStick;
