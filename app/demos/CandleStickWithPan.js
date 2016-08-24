@@ -25,8 +25,7 @@ class CandleStickWithPan extends Component {
 
 	componentWillMount() {
 		this._panResponder = PanResponder.create({
-			onStartShouldSetPanResponder: this._handleShouldSetPanResponder,
-			onMoveShouldSetPanResponder: this._alwaysTrue,
+			onStartShouldSetPanResponderCapture: this._handleStartShouldSetPanResponder,
 			onPanResponderGrant: this._alwaysTrue,
 			onPanResponderMove: this._handlePanResponderMove,
 			onPanResponderRelease: this._alwaysTrue,
@@ -46,12 +45,10 @@ class CandleStickWithPan extends Component {
 	}
 
   // show the cross line
-  _handleShouldSetPanResponder = (e, gestureState) => {
+  _handleStartShouldSetPanResponder = (e, gestureState) => {
     const { locationX, locationY } = e.nativeEvent;
 
-    // console.log({locationX, locationY});
     const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
-    console.log('set current', current);
     this.setCurrentItem(current)
     return true;
   }
@@ -63,7 +60,6 @@ class CandleStickWithPan extends Component {
     const to = from - 86400 * 30 * 1000;
     // const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=1467302400&to=1471536000&resolution=D`;
     const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${Math.floor(from/1000)}&to=${Math.floor(to/1000)}&resolution=D`;
-    console.log('url', url);
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
@@ -126,7 +122,7 @@ class CandleStickWithPan extends Component {
 
 
   render() {
-	console.log('state', this.state);
+    console.log('state', this.state);
     const { current, offset } = this.state;
     const { c, h, l, o, t, s } = this.state.data;
     if (s === undefined) {
