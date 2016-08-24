@@ -30,7 +30,7 @@ class CandleStick extends Component {
     const d = new Date();
     const today = new Date(`${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`).getTime();
     const from = today + 86400 * 1000;
-    const to = from - 86400 * 30 * 1000;
+    const to = from - 86400 * 30 * 1000 * 3; // 3 month ago
     // const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=1467302400&to=1471536000&resolution=D`;
     const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${Math.floor(from/1000)}&to=${Math.floor(to/1000)}&resolution=D`;
     console.log('url', url);
@@ -39,30 +39,6 @@ class CandleStick extends Component {
       .then(data => {
         this.setState({ data, current: 0 });
       });
-  }
-
-  loadMore = () => {
-    const { nextTime } = this.state.data;
-    const to = (nextTime * 1000- 86400 * 30 * 1000) / 1000;
-    if (nextTime) {
-      const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
-      fetch(url)
-        .then(rsp => rsp.json())
-        .then(data => {
-          const originData = this.state.data;
-          const newData = {
-            ...originData,
-            ...data,
-            c: [...originData.c, ...data.c],
-            h: [...originData.h, ...data.h],
-            l: [...originData.l, ...data.l],
-            o: [...originData.o, ...data.o],
-            t: [...originData.t, ...data.t],
-            v: [...originData.v, ...data.v],
-          }
-          this.setState({data: newData});
-        });
-    }
   }
 
   getLinearScale(domain, range, isTime = false) {
@@ -184,9 +160,6 @@ class CandleStick extends Component {
         <View style={{ padding: 15, flexDirection: 'row' }}>
           <TouchableOpacity style={styles.button} onPress={this.toggleGridline}>
             <Text>toggle grid line</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={this.loadMore}>
-            <Text>load more</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
