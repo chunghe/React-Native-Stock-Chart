@@ -33,7 +33,7 @@ class Demos extends Component {
         <TouchableOpacity style={styles.row} onPress={() => handlePress('CandleStick', 'CandleStick')}>
           <Text>CandleStick</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.row} onPress={() => handlePress('CandleStickWithPan')}>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('CandleStickWithPan', 'CandleStick with PanResponder')}>
           <Text>CandleStick with PanResponder</Text>
         </TouchableOpacity>
 
