@@ -25,7 +25,7 @@ class CandleStickWithPan extends Component {
 
 	componentWillMount() {
 		this._panResponder = PanResponder.create({
-			onStartShouldSetPanResponder: this._alwaysTrue,
+			onStartShouldSetPanResponder: this._handleShouldSetPanResponder,
 			onMoveShouldSetPanResponder: this._alwaysTrue,
 			onPanResponderGrant: this._alwaysTrue,
 			onPanResponderMove: this._handlePanResponderMove,
@@ -41,12 +41,20 @@ class CandleStickWithPan extends Component {
   }
 
 	_handlePanResponderMove = (e, gestureState) => {
-		console.log('gestureState', gestureState);
 		const { dx } = gestureState;
-		console.log('gestureState', JSON.stringify(gestureState));
-
-		this.setState({offset: Math.max(this.state.offset + dx, 0)});
+    this.setState({offset: Math.max(this.state.offset + dx, 0)});
 	}
+
+  // show the cross line
+  _handleShouldSetPanResponder = (e, gestureState) => {
+    const { locationX, locationY } = e.nativeEvent;
+
+    // console.log({locationX, locationY});
+    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
+    console.log('set current', current);
+    this.setCurrentItem(current)
+    return true;
+  }
 
   getStockQuotes = () => {
     const d = new Date();
@@ -106,15 +114,6 @@ class CandleStickWithPan extends Component {
     };
   }
 
-  handlePress = (e) => {
-    const { locationX, locationY } = e.nativeEvent;
-
-    // console.log({locationX, locationY});
-    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
-    console.log('set current', current);
-    this.setCurrentItem(current)
-  }
-
   setCurrentItem = (i) => {
     if (i <= this.state.data.o.length - 1) {
       this.setState({ current: i });
@@ -136,7 +135,7 @@ class CandleStickWithPan extends Component {
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
-
+    const svgWidth = Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin));
 
     return (
       <ScrollView style={styles.container}>
@@ -150,9 +149,9 @@ class CandleStickWithPan extends Component {
         </View>
         <Svg
           height={defaultStockChartHeight}
-          width={Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin))}
+          width={svgWidth}
         >
-        <G onPress={this.handlePress}   {...this._panResponder.panHandlers} x={offset}>
+        <G {...this._panResponder.panHandlers} x={offset}>
           <Rect x="0" y="0" height={defaultStockChartHeight} width={deviceWidth} fill="#efefef" x={-1 * offset}/>
           {
             t.map((_, i) => {
