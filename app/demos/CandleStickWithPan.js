@@ -21,50 +21,39 @@ class CandleStickWithPan extends Component {
     this.state = {
       data: {},
       showGridline: false,
-			offset: 0,
+      offset: 0,
       dragging: false
     };
     this._previousOffset = 0;
   }
 
-	componentWillMount() {
-		this._panResponder = PanResponder.create({
-			onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
       onMoveShouldSetPanResponder: this._alwaysTrue,
-			onPanResponderGrant: this._alwaysTrue,
-			onPanResponderMove: this._handlePanResponderMove,
-			onPanResponderRelease: this._handlePanResponderEnd,
-			onPanResponderTerminate: this._handlePanResponderEnd
-		});
-	}
+      onPanResponderGrant: this._alwaysTrue,
+      onPanResponderMove: this._handlePanResponderMove,
+      onPanResponderRelease: this._handlePanResponderEnd,
+      onPanResponderTerminate: this._handlePanResponderEnd
+    });
+  }
 
-	_alwaysTrue = () => true
 
   componentDidMount() {
     this.getStockQuotes();
   }
 
-  // show the cross line
-  _handleStartShouldSetPanResponder = (e, gestureState) => {
-    const { locationX, locationY } = e.nativeEvent;
-
-    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
-    this.setCurrentItem(current)
-    this.setState({dragging: true});
-    return true;
-  }
-
-	_handlePanResponderMove = (e, gestureState) => {
-		const { dx } = gestureState;
+  _handlePanResponderMove = (e, gestureState) => {
+    const { dx } = gestureState;
     const newOffset = Math.max(this._previousOffset + dx, 0);
     if (newOffset !== this.state.offset) {
-      this.setState({offset: newOffset});
+      this.setState({ offset: newOffset });
     }
-	}
+  }
 
   _handlePanResponderEnd = (e, gestureState) => {
     this._previousOffset = Math.max(this._previousOffset + gestureState.dx, 0);
-    this.setState({dragging: false});
+    this.setState({ dragging: false });
   }
 
   getStockQuotes = () => {
@@ -73,7 +62,7 @@ class CandleStickWithPan extends Component {
     const from = today + 86400 * 1000;
     const to = from - 86400 * 30 * 1000;
     // const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=1467302400&to=1471536000&resolution=D`;
-    const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${Math.floor(from/1000)}&to=${Math.floor(to/1000)}&resolution=D`;
+    const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${Math.floor(from / 1000)}&to=${Math.floor(to / 1000)}&resolution=D`;
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
@@ -83,7 +72,7 @@ class CandleStickWithPan extends Component {
 
   loadMore = () => {
     const { nextTime } = this.state.data;
-    const to = (nextTime * 1000- 86400 * 30 * 1000) / 1000;
+    const to = (nextTime * 1000 - 86400 * 30 * 1000) / 1000;
     if (nextTime) {
       const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
       fetch(url)
@@ -99,8 +88,8 @@ class CandleStickWithPan extends Component {
             o: [...originData.o, ...data.o],
             t: [...originData.t, ...data.t],
             v: [...originData.v, ...data.v],
-          }
-          this.setState({data: newData});
+          };
+          this.setState({ data: newData });
         });
     }
   }
@@ -111,7 +100,6 @@ class CandleStickWithPan extends Component {
 
   getItemByIndex = (i) => {
     const { c, h, l, o, t, v, s } = this.state.data;
-    const { current } = this.state;
     return {
       c: c[i],
       h: h[i],
@@ -130,10 +118,21 @@ class CandleStickWithPan extends Component {
     }
   }
 
+  // show the cross line
+  _handleStartShouldSetPanResponder = (e, gestureState) => {
+    const { locationX } = e.nativeEvent;
+
+    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
+    this.setCurrentItem(current);
+    this.setState({ dragging: true });
+    return true;
+  }
+
+	_alwaysTrue = () => true
+
   toggleGridline = () => {
     this.setState({ showGridline: !this.state.showGridline });
   }
-
 
   render() {
     const { current, offset } = this.state;
@@ -168,7 +167,7 @@ class CandleStickWithPan extends Component {
                 !this.state.dragging &&
                 t.map((_, i) => {
                   const { o, c, h, l, color } = this.getItemByIndex(i);
-                  const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
+                  const [scaleO, scaleC, yTop, yBottom] = [o, c, h, l].map(priceScale);
                   // deviceWidth divided columns each has (barWidth + 2) width
                   // leave 1 as the padding on each side
                   // const x = deviceWidth - i * (barWidth + 2) - barWidth;
