@@ -143,7 +143,8 @@ class CandleStickWithPan extends Component {
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
-    const svgWidth = Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin));
+    //const svgWidth = Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin));
+    const svgWidth = deviceWidth * 3;
 
     return (
       <ScrollView style={styles.container}>
@@ -158,9 +159,11 @@ class CandleStickWithPan extends Component {
         <Svg
           height={defaultStockChartHeight}
           width={svgWidth}
+          viewBox={`${svgWidth - deviceWidth - offset} 0 ${deviceWidth} ${defaultStockChartHeight}`}
+          preserveAspectRatio="xMaxYMin meet"
         >
-          <G {...this._panResponder.panHandlers} x={offset}>
-            <Rect x="0" y="0" height={defaultStockChartHeight} width={deviceWidth} fill="#efefef" x={-1 * offset}/>
+          <G {...this._panResponder.panHandlers}>
+            <Rect x="0" y="0" height={defaultStockChartHeight} width={svgWidth} fill="#efefef" x={offset * -1} />
             <StaticContainer shouldUpdate={!this.state.dragging}>
               <G>
               {
