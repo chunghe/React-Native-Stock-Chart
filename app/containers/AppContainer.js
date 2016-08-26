@@ -17,7 +17,7 @@ import D3Shape from '../demos/D3Shape';
 import CustomStockChart from '../demos/CustomStockChart';
 import CandleStick from '../demos/CandleStick';
 import CandleStickWithPan from '../demos/CandleStickWithPan';
-console.log('CandleStickWithPan', CandleStickWithPan);
+import PanResponderDemo from '../demos/PanResponderDemo';
 
 const {
   CardStack: NavigationCardStack,
@@ -46,6 +46,7 @@ class AppContainer extends React.Component {
       D3Ticks,
       D3Shape,
       CustomStockChart,
+      PanResponderDemo,
       CandleStick,
       CandleStickWithPan
     };
