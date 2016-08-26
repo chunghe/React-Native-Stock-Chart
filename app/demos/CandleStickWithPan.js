@@ -24,6 +24,7 @@ class CandleStickWithPan extends Component {
 			offset: 0,
       dragging: false
     };
+    this._previousOffset = 0;
   }
 
 	componentWillMount() {
@@ -43,18 +44,6 @@ class CandleStickWithPan extends Component {
     this.getStockQuotes();
   }
 
-  _handlePanResponderEnd = () => {
-    this.setState({dragging: false});
-  }
-
-	_handlePanResponderMove = (e, gestureState) => {
-		const { dx } = gestureState;
-    console.log('_handlePanResponderMove', gestureState)
-    if (dx) {
-      this.setState({offset: Math.max(this.state.offset + dx, 0)});
-    }
-	}
-
   // show the cross line
   _handleStartShouldSetPanResponder = (e, gestureState) => {
     const { locationX, locationY } = e.nativeEvent;
@@ -63,6 +52,19 @@ class CandleStickWithPan extends Component {
     this.setCurrentItem(current)
     this.setState({dragging: true});
     return true;
+  }
+
+	_handlePanResponderMove = (e, gestureState) => {
+		const { dx } = gestureState;
+    const newOffset = Math.max(this._previousOffset + dx, 0);
+    if (newOffset !== this.state.offset) {
+      this.setState({offset: newOffset});
+    }
+	}
+
+  _handlePanResponderEnd = (e, gestureState) => {
+    this._previousOffset = Math.max(this._previousOffset + gestureState.dx, 0);
+    this.setState({dragging: false});
   }
 
   getStockQuotes = () => {
@@ -134,8 +136,6 @@ class CandleStickWithPan extends Component {
 
 
   render() {
-    console.log('state', this.state);
-    // console.log('dragging', this.state.dragging)
     const { current, offset } = this.state;
     const { c, h, l, o, t, s } = this.state.data;
     if (s === undefined) {
