@@ -18,6 +18,7 @@ import CustomStockChart from '../demos/CustomStockChart';
 import CandleStick from '../demos/CandleStick';
 import CandleStickWithPan from '../demos/CandleStickWithPan';
 import PanResponderDemo from '../demos/PanResponderDemo';
+import PanResponderOverlay from '../demos/PanResponderOverlay';
 
 const {
   CardStack: NavigationCardStack,
@@ -48,7 +49,8 @@ class AppContainer extends React.Component {
       CustomStockChart,
       PanResponderDemo,
       CandleStick,
-      CandleStickWithPan
+      CandleStickWithPan,
+      PanResponderOverlay
     };
 
     const toRender = componentsMapping[route.key] || null;
