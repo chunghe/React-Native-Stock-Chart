@@ -18,9 +18,10 @@ class CandleStickPanOverlay extends Component {
     super(props);
     this.state = {
       data: {},
-      showGridline: false
+      showGridline: false,
+      svgWidth: deviceWidth * 3
     };
-    this._previousOffset = 0;
+    this._previousOffset = (this.state.svgWidth - deviceWidth) * -1;
     this.elPanStyle = {
       style: {
         transform: [{ translateX: this._previousOffset }]
@@ -40,12 +41,9 @@ class CandleStickPanOverlay extends Component {
   }
 
   componentDidMount() {
-    this._updateNativeStyles();
+    // this.elPanStyle.style.transform[0].translateX = -1 * deviceWidth * 2;
     this.getStockQuotes();
-  }
-
-  getSvgWidth() {
-    return deviceWidth * 3;
+    // this._updateNativeStyles();
   }
 
   getStockQuotes = () => {
@@ -110,8 +108,6 @@ class CandleStickPanOverlay extends Component {
     }
   }
 
-
-
   _alwaysTrue = () => true
 
   _handlePanResponderMove = (e, gestureState) => {
@@ -125,11 +121,12 @@ class CandleStickPanOverlay extends Component {
 
 
   _updateNativeStyles = () => {
+    console.log('update style', this.elPanStyle);
     this.elPan && this.elPan.setNativeProps(this.elPanStyle);
   }
 
   render() {
-    const { current, offset } = this.state;
+    const { current, offset, svgWidth } = this.state;
     const { c, h, l, o, t, s } = this.state.data;
     if (s === undefined) {
       return null;
@@ -137,22 +134,27 @@ class CandleStickPanOverlay extends Component {
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
-    //const svgWidth = Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin));
-    const svgWidth = this.getSvgWidth();
+    /*
+    this.elPanStyle = {
+      style: {
+        transform: [{ translateX: this._previousOffset }]
+      }
+    };
+    */
 
     return (
       <ScrollView style={styles.container}>
         <T heading>CandleStick with PanResponder Overlay</T>
         <View
           width={svgWidth}
-          height={defaultStockChartHeight + 10}
+          height={defaultStockChartHeight}
           {...this._panResponder.panHandlers}
           ref={elPan => { this.elPan = elPan; }}
+          style={[styles.elPan, {transform: [{translateX: -750}]} ]}
         >
           <Svg
             height={defaultStockChartHeight}
             width={svgWidth}
-            style={{ backgroundColor: '#efefef' }}
           >
           {
 
@@ -162,9 +164,8 @@ class CandleStickPanOverlay extends Component {
               // deviceWidth divided columns each has (barWidth + 2) width
               // leave 1 as the padding on each side
               // const x = deviceWidth - i * (barWidth + 2) - barWidth;
-              const x = deviceWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
+              const x = svgWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
               const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
-              console.log('x', x);
 
               return (
                 <G
@@ -180,7 +181,7 @@ class CandleStickPanOverlay extends Component {
                   <Path stroke={color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
                   {current === i && <Path stroke="#666" d={`M${x + barWidth / 2} 0 ${x + barWidth / 2} ${defaultStockChartHeight}`} strokeWidth="0.5" />}
                   {current === i &&
-                  <Path stroke="#666" d={`M0 ${scaleC} ${deviceWidth} ${scaleC}`} strokeWidth="0.5" />
+                  <Path stroke="#666" d={`M0 ${scaleC} ${svgWidth} ${scaleC}`} strokeWidth="0.5" />
                   }
                 </G>
               );
@@ -213,6 +214,9 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     padding: 10,
     marginRight: 10
+  },
+  elPan: {
+    backgroundColor: '#efefef',
   }
 });
 

@@ -40,7 +40,6 @@ class PanResponderOverlay extends Component {
     this._updateNativeStyles();
   }
 
-
   getSvgWidth() {
     return deviceWidth * 3;
   }
