@@ -41,9 +41,7 @@ class CandleStickPanOverlay extends Component {
   }
 
   componentDidMount() {
-    // this.elPanStyle.style.transform[0].translateX = -1 * deviceWidth * 2;
     this.getStockQuotes();
-    // this._updateNativeStyles();
   }
 
   getStockQuotes = () => {
@@ -110,15 +108,19 @@ class CandleStickPanOverlay extends Component {
 
   _alwaysTrue = () => true
 
+  // limit translate: 0 >= translate >= -750
+  limit = (translate) => {
+    return Math.max(Math.min(0, translate), -1 * (this.state.svgWidth - deviceWidth));
+  }
+
   _handlePanResponderMove = (e, gestureState) => {
-    this.elPanStyle.style.transform[0].translateX = this._previousOffset + gestureState.dx;
+    this.elPanStyle.style.transform[0].translateX = this.limit(this._previousOffset + gestureState.dx);
     this._updateNativeStyles();
   }
 
   _handlePanResponderEnd = (e, gestureState) => {
-    this._previousOffset += gestureState.dx;
+    this._previousOffset = this.limit(this._previousOffset + gestureState.dx);
   }
-
 
   _updateNativeStyles = () => {
     console.log('update style', this.elPanStyle);
@@ -134,13 +136,6 @@ class CandleStickPanOverlay extends Component {
     const highestPrice = Math.max(...h);
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
-    /*
-    this.elPanStyle = {
-      style: {
-        transform: [{ translateX: this._previousOffset }]
-      }
-    };
-    */
 
     return (
       <ScrollView style={styles.container}>
@@ -150,7 +145,7 @@ class CandleStickPanOverlay extends Component {
           height={defaultStockChartHeight}
           {...this._panResponder.panHandlers}
           ref={elPan => { this.elPan = elPan; }}
-          style={[styles.elPan, {transform: [{translateX: -750}]} ]}
+          style={[styles.elPan, {transform: [{translateX: -1 * (svgWidth - deviceWidth)}]} ]}
         >
           <Svg
             height={defaultStockChartHeight}
@@ -186,6 +181,25 @@ class CandleStickPanOverlay extends Component {
                 </G>
               );
 
+            })
+          }
+          {
+            this.state.showGridline &&
+            priceScale.ticks(10).map((p, i) => {
+              return (
+                <G key={i}>
+                  <SvgText
+                    fill="#999"
+                    textAnchor="end"
+                    x={deviceWidth - 5}
+                    y={priceScale(p) - 6}
+                    fontSize="10"
+                  >
+                    {`${p}`}
+                  </SvgText>
+                  <Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                </G>
+              );
             })
           }
           </Svg>
