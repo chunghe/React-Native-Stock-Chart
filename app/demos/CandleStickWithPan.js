@@ -118,11 +118,14 @@ class CandleStickWithPan extends Component {
     }
   }
 
+  getSvgWidth() {
+    return deviceWidth * 3;
+  }
+
   // show the cross line
   _handleStartShouldSetPanResponder = (e, gestureState) => {
     const { locationX } = e.nativeEvent;
-
-    const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
+    const current = Math.floor((deviceWidth - locationX + this.state.offset) / (barWidth + 2 * barMargin));
     this.setCurrentItem(current);
     this.setState({ dragging: true });
     return true;
@@ -144,7 +147,7 @@ class CandleStickWithPan extends Component {
     const lowestPrice = Math.min(...l);
     const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
     //const svgWidth = Math.max(deviceWidth, c.length * (barWidth + 2 * barMargin));
-    const svgWidth = deviceWidth * 3;
+    const svgWidth = this.getSvgWidth();
 
     return (
       <ScrollView style={styles.container}>
