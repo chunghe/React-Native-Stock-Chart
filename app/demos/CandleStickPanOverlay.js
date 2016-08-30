@@ -4,7 +4,6 @@ import { PanResponder, TouchableOpacity, View, Text, Dimensions,  ScrollView, St
 import Svg, { G, Text as SvgText, Rect, Path } from 'react-native-svg';
 
 import * as d3Scale from 'd3-scale';
-import * as d3Array from 'd3-array';
 
 import T from '../components/T';
 
@@ -49,8 +48,7 @@ class CandleStickPanOverlay extends Component {
     const today = new Date(`${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`).getTime();
     const from = today + 86400 * 1000;
     const to = from - 86400 * 30 * 1000;
-    // const url = `http://hulk.dev.cnyes.cool/api/v1/history?symbol=2330&from=1467302400&to=1471536000&resolution=D`;
-    const url = `http://hulk.dev.cnyes.cool/api/v1/charting/history?symbol=tse:2330&from=${Math.floor(from/1000)}&to=${Math.floor(to/1000)}&resolution=D`;
+    const url = `http://hulk.dev.cnyes.cool/api/v1/charting/history?symbol=tse:2330&from=${Math.floor(from / 1000)}&to=${Math.floor(to / 1000)}&resolution=D`;
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
@@ -149,6 +147,13 @@ class CandleStickPanOverlay extends Component {
     return (
       <ScrollView style={styles.container}>
         <T heading>CandleStick with PanResponder Overlay</T>
+        <Text>{`時間: ${new Date(t[current] * 1000)}`}</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={{ flex: 1 }}>{`收盤: ${c[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`開盤: ${o[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`最高: ${h[current]}`}</Text>
+          <Text style={{ flex: 1 }}>{`最低: ${l[current]}`}</Text>
+        </View>
         <View
           width={svgWidth}
           height={defaultStockChartHeight}

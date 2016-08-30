@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { PanResponder, TouchableOpacity, View, Text, Dimensions,  ScrollView, StyleSheet } from 'react-native';
+import { PanResponder, View, StyleSheet } from 'react-native';
 
-const deviceWidth = Dimensions.get('window').width;
 class PanResponderDemo extends Component {
-	_previousLeft: 0
-	_previousTop: 0
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
@@ -26,9 +23,12 @@ class PanResponderDemo extends Component {
     };
   }
 
-	componentDidMount() {
-		this._updateNativeStyles();
-	}
+  componentDidMount() {
+    this._updateNativeStyles();
+  }
+
+  _previousLeft: 0
+  _previousTop: 0
 
   _handleStartShouldSetPanResponder() {
     // Should we become active when the user presses down on the circle?
@@ -64,23 +64,21 @@ class PanResponderDemo extends Component {
     this._updateNativeStyles();
   }
 
-	_updateNativeStyles = () => {
-		this.circle && this.circle.setNativeProps(this._circleStyles);
-	}
+  _updateNativeStyles = () => {
+    this.circle && this.circle.setNativeProps(this._circleStyles);
+  }
 
   render() {
     return (
-			<View style={styles.container}>
-				<View
-					style={styles.circle}
-					ref={(circle) => {this.circle = circle;}}
-					{...this._panResponder.panHandlers}
-				>
-				</View>
-			</View>
+      <View style={styles.container}>
+        <View
+          style={styles.circle}
+          ref={(circle) => { this.circle = circle; }}
+          {...this._panResponder.panHandlers}
+        />
+      </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -95,14 +93,14 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10
   },
-	circle: {
-		height: 80,
-		width: 80,
-		borderRadius: 40,
-		position: 'absolute',
-		left: 0,
-		top: 0
-	}
+  circle: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    position: 'absolute',
+    left: 0,
+    top: 0
+  }
 });
 
 export default PanResponderDemo;
