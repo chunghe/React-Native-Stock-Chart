@@ -31,7 +31,7 @@ class CandleStickPanOverlay extends Component {
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: this._alwaysTrue,
+      onStartShouldSetPanResponder: this._handleStartShouldSetPanResponder,
       onMoveShouldSetPanResponder: this._alwaysTrue,
       onPanResponderGrant: this._alwaysTrue,
       onPanResponderMove: this._handlePanResponderMove,
@@ -106,11 +106,21 @@ class CandleStickPanOverlay extends Component {
     }
   }
 
+  toggleGridline = () => {
+    this.setState({ showGridline: !this.state.showGridline });
+  }
+
   _alwaysTrue = () => true
 
   // limit translate: 0 >= translate >= -750
   limit = (translate) => {
     return Math.max(Math.min(0, translate), -1 * (this.state.svgWidth - deviceWidth));
+  }
+
+  _handleStartShouldSetPanResponder = (e, gestureState) => {
+    const { locationX } = e.nativeEvent;
+    const current = Math.floor((this.state.svgWidth - locationX) / (barWidth + 2 * barMargin));
+    this.setCurrentItem(current);
   }
 
   _handlePanResponderMove = (e, gestureState) => {
@@ -123,7 +133,6 @@ class CandleStickPanOverlay extends Component {
   }
 
   _updateNativeStyles = () => {
-    console.log('update style', this.elPanStyle);
     this.elPan && this.elPan.setNativeProps(this.elPanStyle);
   }
 
@@ -191,13 +200,13 @@ class CandleStickPanOverlay extends Component {
                   <SvgText
                     fill="#999"
                     textAnchor="end"
-                    x={deviceWidth - 5}
+                    x={svgWidth - 5}
                     y={priceScale(p) - 6}
                     fontSize="10"
                   >
                     {`${p}`}
                   </SvgText>
-                  <Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                  <Path d={`M0 ${priceScale(p)} ${svgWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
                 </G>
               );
             })
