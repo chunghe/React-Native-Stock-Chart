@@ -20,6 +20,7 @@ import CandleStickWithPan from '../demos/CandleStickWithPan';
 import PanResponderDemo from '../demos/PanResponderDemo';
 import PanResponderOverlay from '../demos/PanResponderOverlay';
 import CandleStickPanOverlay from '../demos/CandleStickPanOverlay';
+import CandleStickScrollView from '../demos/CandleStickScrollView';
 
 const {
   CardStack: NavigationCardStack,
@@ -52,7 +53,8 @@ class AppContainer extends React.Component {
       CandleStick,
       CandleStickWithPan,
       PanResponderOverlay,
-      CandleStickPanOverlay
+      CandleStickPanOverlay,
+      CandleStickScrollView
     };
 
     const toRender = componentsMapping[route.key] || null;

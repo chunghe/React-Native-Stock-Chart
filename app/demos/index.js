@@ -45,6 +45,9 @@ class Demos extends Component {
         <TouchableOpacity style={styles.row} onPress={() => handlePress('CandleStickPanOverlay', 'CandleStick with PanResponder Overlay')}>
           <Text>CandleStick with PanResponder Overlay</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.row} onPress={() => handlePress('CandleStickScrollView', 'CandleStick with ScrollView')}>
+          <Text>CandleStick with ScrollView</Text>
+        </TouchableOpacity>
 
         <View style={[styles.row, styles.header]}>
           <Text style={styles.headerText}>use formidable chart</Text>
