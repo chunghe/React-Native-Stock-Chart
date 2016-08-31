@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { PanResponder, View, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
 import Svg, { G, Text as SvgText, Rect } from 'react-native-svg';
-import StaticContainer from 'react-static-container';
 
 import * as d3Array from 'd3-array';
 
@@ -124,49 +123,43 @@ class PanResponderOverlay extends Component {
     return (
       <View style={styles.container}>
         <T heading>PanResponder overlay</T>
-        <ScrollView
-          horizontal
-          directionalLockEnabled
-          scrollEnabled={this.state.scrollEnabled}
-          bounces={false}
-          onTouchStart={this.handleTouchStart}
-          onTouchMove={this.handleTouchMove}
-          onTouchEnd={this.handleTouchEnd}
-          onScrollBeginDrag={this.handleScrollBeginDrag}
-          onScrollEndDrag={this.handleScrollEndDrag}
-          style={{
-            height: defaultStockChartHeight,
-            width: deviceWidth,
-            backgroundColor:this.state.scrollEnabled ? 'green' : 'red'
-          }}
-        >
-          <StaticContainer shouldUpdate={this.state.scrollEnabled}>
+        <View>
+          <ScrollView
+            horizontal
+            directionalLockEnabled
+            scrollEnabled={this.state.scrollEnabled}
+            bounces={false}
+            automaticallyAdjustContentInsets={false}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            onTouchStart={this.handleTouchStart}
+            onTouchMove={this.handleTouchMove}
+            onTouchEnd={this.handleTouchEnd}
+            onScrollBeginDrag={this.handleScrollBeginDrag}
+            onScrollEndDrag={this.handleScrollEndDrag}
+            style={{
+              height: defaultStockChartHeight,
+              width: deviceWidth
+            }}
+          >
             <Svg
               height={defaultStockChartHeight}
               width={svgWidth}
-              style={{ backgroundColor: '#efefef' }}
             >
-            {points.map(point =>
-              <G key={point}>
-                <Rect fill="red" width="2" height="10" x={point} y={defaultStockChartHeight / 2} />
-                <SvgText x={point} y={defaultStockChartHeight / 2 + 10} textAnchor="middle">{`${point}`}</SvgText>
-              </G>
+              {points.map(point =>
+                <G key={point}>
+                  <Rect fill="red" width="2" height="10" x={point} y={defaultStockChartHeight / 2} />
+                  <SvgText x={point} y={defaultStockChartHeight / 2 + 10} textAnchor="middle">{`${point}`}</SvgText>
+                </G>
               )}
 
             </Svg>
-          </StaticContainer>
-          <View
-            ref={(cross) => { this.cross = cross; }}
-            style={{
-              position: 'absolute',
-              top: 0 ,
-              left: 0,
-              backgroundColor: '#999',
-              width: 2,
-              height: defaultStockChartHeight
-            }}
-          />
-        </ScrollView>
+            <View
+              ref={(cross) => { this.cross = cross; }}
+              style={styles.cross}
+            />
+          </ScrollView>
+        </View>
       </View>
     );
   }
@@ -176,6 +169,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
+  },
+  cross: {
+    position: 'absolute',
+    top: 0 ,
+    left: 0,
+    backgroundColor: '#999',
+    width: 2,
+    height: defaultStockChartHeight
   }
 });
 
