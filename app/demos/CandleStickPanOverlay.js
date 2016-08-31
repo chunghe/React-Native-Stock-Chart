@@ -48,7 +48,7 @@ class CandleStickPanOverlay extends Component {
     const today = new Date(`${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`).getTime();
     const from = today + 86400 * 1000;
     const to = from - 86400 * 30 * 1000;
-    const url = `http://hulk.dev.cnyes.cool/api/v1/charting/history?symbol=tse:2330&from=${Math.floor(from / 1000)}&to=${Math.floor(to / 1000)}&resolution=D`;
+    const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${Math.floor(from / 1000)}&to=${Math.floor(to / 1000)}&resolution=D`;
     fetch(url)
       .then(rsp => rsp.json())
       .then(data => {
@@ -60,7 +60,7 @@ class CandleStickPanOverlay extends Component {
     const { nextTime } = this.state.data;
     const to = (nextTime * 1000 - 86400 * 30 * 1000) / 1000;
     if (nextTime) {
-      const url = `http://hulk.dev.cnyes.cool/api/v1/charting/history?symbol=tse:2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
+      const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
       fetch(url)
         .then(rsp => rsp.json())
         .then(data => {
