@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PanResponder, Text, View, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
 import Svg, { G, Text as SvgText, Rect } from 'react-native-svg';
+import StaticContainer from 'react-static-container';
 
 import * as d3Array from 'd3-array';
 
@@ -92,6 +93,9 @@ class PanResponderOverlay extends Component {
           this.setState({scrollEnabled: false});
         }
       }
+    } else {
+      console.log('this.cross', this.cross, locationX);
+      this.cross && this.cross.setNativeProps({style: {left: locationX} });
     }
   }
 
@@ -111,6 +115,7 @@ class PanResponderOverlay extends Component {
   }
 
   render() {
+    console.log('render');
     const svgWidth = this.getSvgWidth();
     const points = d3Array.range(0, svgWidth, 50);
 
@@ -135,6 +140,7 @@ class PanResponderOverlay extends Component {
             backgroundColor:this.state.scrollEnabled ? 'green' : 'red'
           }}
         >
+          <StaticContainer shouldUpdate={this.state.scrollEnabled}>
             <Svg
               height={defaultStockChartHeight}
               width={svgWidth}
@@ -148,6 +154,10 @@ class PanResponderOverlay extends Component {
               )}
 
             </Svg>
+          </StaticContainer>
+          <View
+            ref={(cross) => {this.cross = cross;}}
+            style={{position: 'absolute', top: 0 , left: 0, backgroundColor: '#999', width: 2, height: defaultStockChartHeight}} />
         </ScrollView>
       </View>
     );
