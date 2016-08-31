@@ -15,6 +15,11 @@ import D3Scale from '../demos/D3Scale';
 import D3Ticks from '../demos/D3Ticks';
 import D3Shape from '../demos/D3Shape';
 import CustomStockChart from '../demos/CustomStockChart';
+import CandleStick from '../demos/CandleStick';
+import CandleStickWithPan from '../demos/CandleStickWithPan';
+import PanResponderDemo from '../demos/PanResponderDemo';
+import PanResponderOverlay from '../demos/PanResponderOverlay';
+import CandleStickPanOverlay from '../demos/CandleStickPanOverlay';
 
 const {
   CardStack: NavigationCardStack,
@@ -43,6 +48,11 @@ class AppContainer extends React.Component {
       D3Ticks,
       D3Shape,
       CustomStockChart,
+      PanResponderDemo,
+      CandleStick,
+      CandleStickWithPan,
+      PanResponderOverlay,
+      CandleStickPanOverlay
     };
 
     const toRender = componentsMapping[route.key] || null;

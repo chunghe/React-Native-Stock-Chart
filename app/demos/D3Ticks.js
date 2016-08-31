@@ -133,7 +133,6 @@ class D3Ticks extends Component {
             y={priceScale(t)}
             textAnchor="end"
             fill="#999"
-            key={t}
           >
             {\`\${t}\`}
           </Text>
