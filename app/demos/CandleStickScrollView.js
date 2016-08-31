@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { PanResponder, View, Dimensions,  ScrollView, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
-import Svg, { G, Text as SvgText, Rect } from 'react-native-svg';
+import Svg, { G, Text as SvgText, Rect, Path } from 'react-native-svg';
 
-import * as d3Array from 'd3-array';
-
+import * as d3Scale from 'd3-scale';
 import T from '../components/T';
 
 const deviceWidth = Dimensions.get('window').width;
 const defaultStockChartHeight = 200;
+const barMargin = 1; // 1 on each side
+const barWidth = 5;
 
 class CandleStickScrollView extends Component {
   constructor(props) {
@@ -18,48 +19,79 @@ class CandleStickScrollView extends Component {
       showGridline: false,
       scrollEnabled: true
     };
-    this._previousOffset = 0;
-    this.elPanStyle = {
-      style: {
-        transform: [{ translateX: this._previousOffset }]
-      }
-    };
-  }
-
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: this._alwaysTrue,
-      onMoveShouldSetPanResponder: this._alwaysTrue,
-      onPanResponderGrant: this._alwaysTrue,
-      onPanResponderMove: this._handlePanResponderMove,
-      onPanResponderRelease: this._handlePanResponderEnd,
-      onPanResponderTerminate: this._handlePanResponderEnd
-    });
   }
 
   componentDidMount() {
-    this._updateNativeStyles();
+    this.getStockQuotes();
   }
 
   getSvgWidth() {
     return deviceWidth * 3;
   }
 
-  _alwaysTrue = () => true
-
-  _handlePanResponderMove = (e, gestureState) => {
-    console.log('move');
-    this.elPanStyle.style.transform[0].translateX = this._previousOffset + gestureState.dx;
-    this._updateNativeStyles();
+  getStockQuotes = () => {
+    const d = new Date();
+    const today = new Date(`${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`).getTime();
+    const from = today + 86400 * 1000;
+    const to = from - 86400 * 30 * 1000 * 3;
+    const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${Math.floor(from / 1000)}&to=${Math.floor(to / 1000)}&resolution=D`;
+    fetch(url)
+      .then(rsp => rsp.json())
+      .then(data => {
+        this.setState({ data, current: 0 });
+      });
   }
 
-  _handlePanResponderEnd = (e, gestureState) => {
-    console.log('end');
-    this._previousOffset += gestureState.dx;
+  getLinearScale(domain, range, isTime = false) {
+    return (isTime ? d3Scale.scaleTime() : d3Scale.scaleLinear()).domain(domain).range(range);
   }
 
-  _updateNativeStyles = () => {
-    this.elPan && this.elPan.setNativeProps(this.elPanStyle);
+  getItemByIndex = (i) => {
+    const { c, h, l, o, t, v, s } = this.state.data;
+    return {
+      c: c[i],
+      h: h[i],
+      l: l[i],
+      o: o[i],
+      t: new Date(t[i] * 1000),
+      v: v[i],
+      s,
+      color: o[i] <= c[i] ? 'rgb(210, 72, 62)' : 'rgb(28, 193, 135)'
+    };
+  }
+
+  setCurrentItem = (i) => {
+    if (i <= this.state.data.o.length - 1) {
+      this.setState({ current: i });
+    }
+  }
+
+  loadMore = () => {
+    const { nextTime } = this.state.data;
+    const to = (nextTime * 1000 - 86400 * 30 * 1000) / 1000;
+    if (nextTime) {
+      const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
+      fetch(url)
+        .then(rsp => rsp.json())
+        .then(data => {
+          const originData = this.state.data;
+          const newData = {
+            ...originData,
+            ...data,
+            c: [...originData.c, ...data.c],
+            h: [...originData.h, ...data.h],
+            l: [...originData.l, ...data.l],
+            o: [...originData.o, ...data.o],
+            t: [...originData.t, ...data.t],
+            v: [...originData.v, ...data.v],
+          };
+          this.setState({ data: newData });
+        });
+    }
+  }
+
+  toggleGridline = () => {
+    this.setState({ showGridline: !this.state.showGridline });
   }
 
 
@@ -116,13 +148,17 @@ class CandleStickScrollView extends Component {
   render() {
     console.log('render');
     const svgWidth = this.getSvgWidth();
-    const points = d3Array.range(0, svgWidth, 50);
+    const { h, l, t, s } = this.state.data;
+    if (s === undefined) {
+      return null;
+    }
+    const highestPrice = Math.max(...h);
+    const lowestPrice = Math.min(...l);
+    const priceScale = this.getLinearScale([lowestPrice, highestPrice], [0, defaultStockChartHeight].reverse());
 
-    // scroll view 的 onTouchMove event fire 很正常
-    // TouchWithoutFeedback/svg 的 panhandelr 常常會斷掉 (move -> end)
     return (
       <View style={styles.container}>
-        <T heading>PanResponder overlay</T>
+        <T heading>CandleStick with ScrollView</T>
         <View>
           <ScrollView
             horizontal
@@ -145,20 +181,66 @@ class CandleStickScrollView extends Component {
             <Svg
               height={defaultStockChartHeight}
               width={svgWidth}
+              style={{ backgroundColor: '#efefef' }}
             >
-              {points.map(point =>
-                <G key={point}>
-                  <Rect fill="red" width="2" height="10" x={point} y={defaultStockChartHeight / 2} />
-                  <SvgText x={point} y={defaultStockChartHeight / 2 + 10} textAnchor="middle">{`${point}`}</SvgText>
-                </G>
-              )}
-
+            {
+              t.map((_, i) => {
+                const item = this.getItemByIndex(i);
+                const [scaleO, scaleC, yTop, yBottom] = [item.o, item.c, item.h, item.l].map(priceScale);
+                // deviceWidth divided columns each has (barWidth + 2) width
+                // leave 1 as the padding on each side
+                // const x = deviceWidth - i * (barWidth + 2) - barWidth;
+                const x = svgWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
+                const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
+                return (
+                  <G
+                    key={i}
+                  >
+                    <Rect
+                      x={x}
+                      y={Math.min(scaleO, scaleC)}
+                      fill={item.color}
+                      height={barHeight}
+                      width={barWidth}
+                    />
+                    <Path stroke={item.color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
+                  </G>
+                );
+              })
+            }
+            {
+              this.state.showGridline &&
+              priceScale.ticks(10).map((p, i) => {
+                return (
+                  <G key={i}>
+                    <SvgText
+                      fill="#999"
+                      textAnchor="end"
+                      x={svgWidth - 5}
+                      y={priceScale(p) - 6}
+                      fontSize="10"
+                    >
+                      {`${p}`}
+                    </SvgText>
+                    <Path d={`M0 ${priceScale(p)} ${svgWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                  </G>
+                );
+              })
+            }
             </Svg>
             <View
               ref={(cross) => { this.cross = cross; }}
               style={styles.cross}
             />
           </ScrollView>
+        </View>
+        <View style={{ padding: 15, flexDirection: 'row' }}>
+          <TouchableOpacity style={styles.button} onPress={this.toggleGridline}>
+            <Text>toggle grid line</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={this.loadMore}>
+            <Text>load more</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -177,7 +259,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#999',
     width: 2,
     height: defaultStockChartHeight
-  }
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: '#666',
+    borderStyle: 'solid',
+    padding: 10,
+    marginRight: 10
+  },
 });
 
 export default CandleStickScrollView;

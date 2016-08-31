@@ -8,9 +8,9 @@ import * as d3Scale from 'd3-scale';
 import T from '../components/T';
 
 const deviceWidth = Dimensions.get('window').width;
-const barMargin = 1; // 1 on each side
 const defaultStockChartHeight = 200;
 const barWidth = 5;
+const barMargin = 1; // 1 on each side
 
 class CandleStickPanOverlay extends Component {
   constructor(props) {
