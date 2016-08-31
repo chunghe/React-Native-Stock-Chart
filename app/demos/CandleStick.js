@@ -45,7 +45,6 @@ class CandleStick extends Component {
 
   getItemByIndex = (i) => {
     const { c, h, l, o, t, v, s } = this.state.data;
-    const { current } = this.state;
     return {
       c: c[i],
       h: h[i],
@@ -65,7 +64,7 @@ class CandleStick extends Component {
   }
 
   handlePress = (e) => {
-    const { locationX, locationY } = e.nativeEvent;
+    const { locationX } = e.nativeEvent;
 
     // console.log({locationX, locationY});
     const current = Math.floor((deviceWidth - locationX) / (barWidth + 2 * barMargin));
@@ -102,56 +101,58 @@ class CandleStick extends Component {
           height={defaultStockChartHeight}
           width={deviceWidth}
         >
-        <G onPress={this.handlePress}>
-          <Rect x="0" y="0" height={defaultStockChartHeight} width={deviceWidth} fill="#efefef" />
-          {
-            t.map((_, i) => {
-              const { o, c, h, l, color } = this.getItemByIndex(i);
-              const [ scaleO, scaleC, yTop, yBottom ] = [o, c, h, l].map(priceScale);
-              // deviceWidth divided columns each has (barWidth + 2) width
-              // leave 1 as the padding on each side
-              // const x = deviceWidth - i * (barWidth + 2) - barWidth;
-              const x = deviceWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
-              const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
-              return (
-                <G
-                  key={i}
-                >
-                  <Rect
-                    x={x}
-                    y={Math.min(scaleO, scaleC)}
-                    fill={color}
-                    height={barHeight}
-                    width={barWidth}
-                  />
-                  <Path stroke={color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
-                  {current === i && <Path stroke="#666" d={`M${x + barWidth / 2} 0 ${x + barWidth / 2} ${defaultStockChartHeight}`} strokeWidth="0.5" />}
-                  {current === i &&
-                  <Path stroke="#666" d={`M0 ${scaleC} ${deviceWidth} ${scaleC}`} strokeWidth="0.5" />
-                  }
-                </G>
-              );
-            }, this)
-          }
-          {
-            this.state.showGridline &&
-            priceScale.ticks(10).map((p, i) => {
-              return (
-                <G key={i}>
-                  <SvgText
-                    fill="#999"
-                    textAnchor="end"
-                    x={deviceWidth - 5}
-                    y={priceScale(p) - 6}
-                    fontSize="10"
+          <G onPress={this.handlePress}>
+            <Rect x="0" y="0" height={defaultStockChartHeight} width={deviceWidth} fill="#efefef" />
+            {
+              t.map((_, i) => {
+                const item = this.getItemByIndex(i);
+                const [scaleO, scaleC, yTop, yBottom] = [item.o, item.c, item.h, item.l].map(priceScale);
+                // deviceWidth divided columns each has (barWidth + 2) width
+                // leave 1 as the padding on each side
+                // const x = deviceWidth - i * (barWidth + 2) - barWidth;
+                const x = deviceWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
+                const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
+                return (
+                  <G
+                    key={i}
                   >
-                    {`${p}`}
-                  </SvgText>
-                  <Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
-                </G>
-              );
-            })
-          }
+                    <Rect
+                      x={x}
+                      y={Math.min(scaleO, scaleC)}
+                      fill={item.color}
+                      height={barHeight}
+                      width={barWidth}
+                    />
+                    <Path stroke={item.color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
+                    {current === i &&
+                      <Path stroke="#666" d={`M${x + barWidth / 2} 0 ${x + barWidth / 2} ${defaultStockChartHeight}`} strokeWidth="0.5" />
+                    }
+                    {current === i &&
+                      <Path stroke="#666" d={`M0 ${scaleC} ${deviceWidth} ${scaleC}`} strokeWidth="0.5" />
+                    }
+                  </G>
+                );
+              }, this)
+            }
+            {
+              this.state.showGridline &&
+              priceScale.ticks(10).map((p, i) => {
+                return (
+                  <G key={i}>
+                    <SvgText
+                      fill="#999"
+                      textAnchor="end"
+                      x={deviceWidth - 5}
+                      y={priceScale(p) - 6}
+                      fontSize="10"
+                    >
+                      {`${p}`}
+                    </SvgText>
+                    <Path d={`M0 ${priceScale(p)} ${deviceWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                  </G>
+                );
+              })
+            }
           </G>
         </Svg>
         <View style={{ padding: 15, flexDirection: 'row' }}>

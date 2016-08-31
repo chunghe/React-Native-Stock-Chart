@@ -56,30 +56,6 @@ class CandleStickPanOverlay extends Component {
       });
   }
 
-  loadMore = () => {
-    const { nextTime } = this.state.data;
-    const to = (nextTime * 1000 - 86400 * 30 * 1000) / 1000;
-    if (nextTime) {
-      const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
-      fetch(url)
-        .then(rsp => rsp.json())
-        .then(data => {
-          const originData = this.state.data;
-          const newData = {
-            ...originData,
-            ...data,
-            c: [...originData.c, ...data.c],
-            h: [...originData.h, ...data.h],
-            l: [...originData.l, ...data.l],
-            o: [...originData.o, ...data.o],
-            t: [...originData.t, ...data.t],
-            v: [...originData.v, ...data.v],
-          };
-          this.setState({ data: newData });
-        });
-    }
-  }
-
   getLinearScale(domain, range, isTime = false) {
     return (isTime ? d3Scale.scaleTime() : d3Scale.scaleLinear()).domain(domain).range(range);
   }
@@ -101,6 +77,30 @@ class CandleStickPanOverlay extends Component {
   setCurrentItem = (i) => {
     if (i <= this.state.data.o.length - 1) {
       this.setState({ current: i });
+    }
+  }
+
+  loadMore = () => {
+    const { nextTime } = this.state.data;
+    const to = (nextTime * 1000 - 86400 * 30 * 1000) / 1000;
+    if (nextTime) {
+      const url = `http://m.cnyes.com/api/v1/charting/history?symbol=tse:2330&from=${nextTime}&to=${Math.floor(to)}&resolution=D`;
+      fetch(url)
+        .then(rsp => rsp.json())
+        .then(data => {
+          const originData = this.state.data;
+          const newData = {
+            ...originData,
+            ...data,
+            c: [...originData.c, ...data.c],
+            h: [...originData.h, ...data.h],
+            l: [...originData.l, ...data.l],
+            o: [...originData.o, ...data.o],
+            t: [...originData.t, ...data.t],
+            v: [...originData.v, ...data.v],
+          };
+          this.setState({ data: newData });
+        });
     }
   }
 
@@ -135,7 +135,7 @@ class CandleStickPanOverlay extends Component {
   }
 
   render() {
-    const { current, offset, svgWidth } = this.state;
+    const { current, svgWidth } = this.state;
     const { c, h, l, o, t, s } = this.state.data;
     if (s === undefined) {
       return null;
@@ -159,63 +159,63 @@ class CandleStickPanOverlay extends Component {
           height={defaultStockChartHeight}
           {...this._panResponder.panHandlers}
           ref={elPan => { this.elPan = elPan; }}
-          style={[styles.elPan, {transform: [{translateX: -1 * (svgWidth - deviceWidth)}]} ]}
+          style={[styles.elPan, { transform: [{ translateX: -1 * (svgWidth - deviceWidth) }] }]}
         >
           <Svg
             height={defaultStockChartHeight}
             width={svgWidth}
           >
-          {
+            {
+              t.map((_, i) => {
+                const item = this.getItemByIndex(i);
+                const [scaleO, scaleC, yTop, yBottom] = [item.o, item.c, item.h, item.l].map(priceScale);
+                // deviceWidth divided columns each has (barWidth + 2) width
+                // leave 1 as the padding on each side
+                // const x = deviceWidth - i * (barWidth + 2) - barWidth;
+                const x = svgWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
+                const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
 
-            t.map((_, i) => {
-              const { o, c, h, l, color } = this.getItemByIndex(i);
-              const [scaleO, scaleC, yTop, yBottom] = [o, c, h, l].map(priceScale);
-              // deviceWidth divided columns each has (barWidth + 2) width
-              // leave 1 as the padding on each side
-              // const x = deviceWidth - i * (barWidth + 2) - barWidth;
-              const x = svgWidth - barWidth * (i + 1) - barMargin * (2 * i + 1);
-              const barHeight = Math.max(Math.abs(scaleO - scaleC), 1); // if open === close, make sure chartHigh = 1
-
-              return (
-                <G
-                  key={i}
-                >
-                  <Rect
-                    x={x}
-                    y={Math.min(scaleO, scaleC)}
-                    fill={color}
-                    height={barHeight}
-                    width={barWidth}
-                  />
-                  <Path stroke={color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
-                  {current === i && <Path stroke="#666" d={`M${x + barWidth / 2} 0 ${x + barWidth / 2} ${defaultStockChartHeight}`} strokeWidth="0.5" />}
-                  {current === i &&
-                  <Path stroke="#666" d={`M0 ${scaleC} ${svgWidth} ${scaleC}`} strokeWidth="0.5" />
-                  }
-                </G>
-              );
-
-            })
-          }
-          {
-            this.state.showGridline &&
-            priceScale.ticks(10).map((p, i) => {
-              return (
-                <G key={i}>
-                  <SvgText
-                    fill="#999"
-                    textAnchor="end"
-                    x={svgWidth - 5}
-                    y={priceScale(p) - 6}
-                    fontSize="10"
+                return (
+                  <G
+                    key={i}
                   >
-                    {`${p}`}
-                  </SvgText>
-                  <Path d={`M0 ${priceScale(p)} ${svgWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
-                </G>
-              );
-            })
-          }
+                    <Rect
+                      x={x}
+                      y={Math.min(scaleO, scaleC)}
+                      fill={item.color}
+                      height={barHeight}
+                      width={barWidth}
+                    />
+                    <Path stroke={item.color} d={`M${x + barWidth / 2} ${yTop} ${x + barWidth / 2} ${yBottom}`} strokeWidth="1" />
+                    {current === i &&
+                      <Path stroke="#666" d={`M${x + barWidth / 2} 0 ${x + barWidth / 2} ${defaultStockChartHeight}`} strokeWidth="0.5" />
+                    }
+                    {current === i &&
+                      <Path stroke="#666" d={`M0 ${scaleC} ${svgWidth} ${scaleC}`} strokeWidth="0.5" />
+                    }
+                  </G>
+                );
+              })
+            }
+            {
+              this.state.showGridline &&
+              priceScale.ticks(10).map((p, i) => {
+                return (
+                  <G key={i}>
+                    <SvgText
+                      fill="#999"
+                      textAnchor="end"
+                      x={svgWidth - 5}
+                      y={priceScale(p) - 6}
+                      fontSize="10"
+                    >
+                      {`${p}`}
+                    </SvgText>
+                    <Path d={`M0 ${priceScale(p)} ${svgWidth - 25} ${priceScale(p)}`} stroke="#ddd" strokeWidth="1" />
+                  </G>
+                );
+              })
+            }
           </Svg>
         </View>
         <View style={{ padding: 15, flexDirection: 'row' }}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PanResponder, Text, View, Dimensions,  ScrollView, StyleSheet } from 'react-native';
+import { PanResponder, View, Dimensions,  ScrollView, StyleSheet } from 'react-native';
 
 import Svg, { G, Text as SvgText, Rect } from 'react-native-svg';
 import StaticContainer from 'react-static-container';
@@ -86,23 +86,23 @@ class PanResponderOverlay extends Component {
     const { timestamp, locationX, locationY } = e.nativeEvent;
     if (this.state.scrollEnabled !== false) {
       if (timestamp - this._touchStartTime > 300) {
-        console.log('check position', e.nativeEvent)
+        console.log('check position', e.nativeEvent);
         if (this.closeEnough(locationX, this._touchStartPosition.locationX) &&
             this.closeEnough(locationY, this._touchStartPosition.locationY)) {
           console.log('-- lock --');
-          this.setState({scrollEnabled: false});
+          this.setState({ scrollEnabled: false });
         }
       }
     } else {
       console.log('this.cross', this.cross, locationX);
-      this.cross && this.cross.setNativeProps({style: {left: locationX} });
+      this.cross && this.cross.setNativeProps({ style: { left: locationX } });
     }
   }
 
   handleTouchEnd = () => {
     console.log('handleTouchEnd');
     if (this.state.scrollEnabled === false) {
-      this.setState({scrollEnabled: true});
+      this.setState({ scrollEnabled: true });
     }
   }
 
@@ -125,8 +125,8 @@ class PanResponderOverlay extends Component {
       <View style={styles.container}>
         <T heading>PanResponder overlay</T>
         <ScrollView
-          horizontal={true}
-          directionalLockEnabled={true}
+          horizontal
+          directionalLockEnabled
           scrollEnabled={this.state.scrollEnabled}
           bounces={false}
           onTouchStart={this.handleTouchStart}
@@ -156,8 +156,16 @@ class PanResponderOverlay extends Component {
             </Svg>
           </StaticContainer>
           <View
-            ref={(cross) => {this.cross = cross;}}
-            style={{position: 'absolute', top: 0 , left: 0, backgroundColor: '#999', width: 2, height: defaultStockChartHeight}} />
+            ref={(cross) => { this.cross = cross; }}
+            style={{
+              position: 'absolute',
+              top: 0 ,
+              left: 0,
+              backgroundColor: '#999',
+              width: 2,
+              height: defaultStockChartHeight
+            }}
+          />
         </ScrollView>
       </View>
     );
