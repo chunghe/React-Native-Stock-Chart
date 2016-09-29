@@ -60,7 +60,7 @@ class AppContainer extends React.Component {
     const toRender = componentsMapping[route.key] || null;
     // make all the Views' marginTop equals header height
     return (
-      <View style={{ flex: 1, marginTop: NavigationExperimental.Header.HEIGHT }}>
+      <View style={{ flex: 1 }}>
       {React.createElement(toRender, { route })}
       </View>
     );
@@ -93,7 +93,7 @@ class AppContainer extends React.Component {
         style={styles.outerContainer}
         onNavigateBack={handleNavigateBack}
         renderScene={this._renderScene}
-        renderOverlay={this._renderHeader}
+        renderHeader={this._renderHeader}
       />
     );
   }

@@ -160,12 +160,12 @@ class SVGBasic extends Component {
 
         <T>Example: strokeWidth/dashArray</T>
         <Svg height={100} width={deviceWidth} style={{ backgroundColor: 'lime' }}>
-          <Path d={`M${deviceWidth / 2} 0 ${deviceWidth / 2} 100`} strokeWidth="2" />
+          <Path d={`M${deviceWidth / 2} 0 ${deviceWidth / 2} 100`} strokeWidth="2" stroke="red" />
           <Path d={`M0 50 ${deviceWidth} 50`} stroke="blue" strokeWidth="2" strokeDasharray="2,2" />
         </Svg>
         <Code>
         {`
-  <Path d={\`M\${deviceWidth / 2} 0 \${deviceWidth / 2} 100\`} strokeWidth="2" />
+  <Path d={\`M\${deviceWidth / 2} 0 \${deviceWidth / 2} 100\`} strokeWidth="2" stroke="red" />
   <Path d={\`M0 50 \${deviceWidth} 50\`} stroke="blue" strokeWidth="2" strokeDasharray="2,2" />
         `}
         </Code>
